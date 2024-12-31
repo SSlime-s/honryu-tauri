@@ -1,4 +1,4 @@
-import { assign, createActor, createMachine, EventObject } from "xstate";
+import { assign, createMachine } from "xstate";
 import { Response } from "../translate/schema.ts";
 
 export const pageMachine = createMachine({

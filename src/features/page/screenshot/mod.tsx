@@ -1,5 +1,3 @@
-import type { useMachine } from "@xstate/react";
-import type { pageMachine } from "../machine.ts";
 import React, {
   useCallback,
   useEffect,
@@ -9,14 +7,12 @@ import React, {
 } from "react";
 import {
   getCurrentWindow,
-  LogicalPosition,
   LogicalSize,
   PhysicalPosition,
   PhysicalSize,
 } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api/core";
 import * as v from "valibot";
-import { mockedScreenshot } from "../../images/mod.ts";
 import { withMimeType } from "../../images/base64.ts";
 import type { BaseProps } from "../mod.ts";
 import Crosshair from "../../../assets/crosshair.svg";
@@ -40,7 +36,7 @@ async function takeScreenshot() {
 interface Props extends BaseProps {}
 type Coordinate = [x: number, y: number];
 
-export function ScreenshotPage({ pageState, send }: Props) {
+export function ScreenshotPage({ send }: Props) {
   const [wholeImage, setWholeImage] = useState<string | null>(null);
   const [dragStart, setDragStart] = useState<Coordinate | null>(null);
   const [draggingPosition, setDraggingPosition] = useState<Coordinate | null>(
