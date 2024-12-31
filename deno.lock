@@ -1,15 +1,18 @@
 {
   "version": "4",
   "specifiers": {
+    "npm:@google/generative-ai@0.21": "0.21.0",
     "npm:@tauri-apps/api@2": "2.1.1",
     "npm:@tauri-apps/cli@2": "2.1.0",
     "npm:@tauri-apps/plugin-opener@2": "2.2.2",
     "npm:@types/react-dom@^18.3.1": "18.3.5_@types+react@18.3.18",
     "npm:@types/react@^18.3.1": "18.3.18",
     "npm:@vitejs/plugin-react@^4.3.4": "4.3.4_vite@6.0.6_@babel+core@7.26.0",
+    "npm:partial-json@~0.1.7": "0.1.7",
     "npm:react-dom@^18.3.1": "18.3.1_react@18.3.1",
     "npm:react@^18.3.1": "18.3.1",
     "npm:typescript@~5.6.2": "5.6.3",
+    "npm:valibot@^1.0.0-beta.9": "1.0.0-beta.9_typescript@5.6.3",
     "npm:vite@^6.0.3": "6.0.6"
   },
   "npm": {
@@ -227,6 +230,9 @@
     },
     "@esbuild/win32-x64@0.24.2": {
       "integrity": "sha512-7VTgWzgMGvup6aSqDPLiW5zHaxYJGTO4OokMjIlrCtf+VpEL+cXKtCvg723iguPYI5oaUNdS+/V7OU2gvXVWEg=="
+    },
+    "@google/generative-ai@0.21.0": {
+      "integrity": "sha512-7XhUbtnlkSEZK15kN3t+tzIMxsbKm/dSkKBFalj+20NvPKe1kBY7mR2P7vuijEn+f06z5+A8bVGKO0v39cr6Wg=="
     },
     "@jridgewell/gen-mapping@0.3.8": {
       "integrity": "sha512-imAbBGkb+ebQyxKgzv5Hu2nmROxoDOXHh80evxdoXNOrvAnVx7zimzc1Oo5h9RlfV4vPXaE2iM5pOFbvOCClWA==",
@@ -521,6 +527,9 @@
     "node-releases@2.0.19": {
       "integrity": "sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw=="
     },
+    "partial-json@0.1.7": {
+      "integrity": "sha512-Njv/59hHaokb/hRUjce3Hdv12wd60MtM9Z5Olmn+nehe0QDAsRtRbJPvJ0Z91TusF0SuZRIvnM+S4l6EIP8leA=="
+    },
     "picocolors@1.1.1": {
       "integrity": "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="
     },
@@ -598,6 +607,12 @@
         "picocolors"
       ]
     },
+    "valibot@1.0.0-beta.9_typescript@5.6.3": {
+      "integrity": "sha512-yEX8gMAZ2R1yI2uwOO4NCtVnJQx36zn3vD0omzzj9FhcoblvPukENIiRZXKZwCnqSeV80bMm8wNiGhQ0S8fiww==",
+      "dependencies": [
+        "typescript"
+      ]
+    },
     "vite@6.0.6": {
       "integrity": "sha512-NSjmUuckPmDU18bHz7QZ+bTYhRR0iA72cs2QAxCqDpafJ0S6qetco0LB3WW2OxlMHS0JmAv+yZ/R3uPmMyGTjQ==",
       "dependencies": [
@@ -614,15 +629,18 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
+        "npm:@google/generative-ai@0.21",
         "npm:@tauri-apps/api@2",
         "npm:@tauri-apps/cli@2",
         "npm:@tauri-apps/plugin-opener@2",
         "npm:@types/react-dom@^18.3.1",
         "npm:@types/react@^18.3.1",
         "npm:@vitejs/plugin-react@^4.3.4",
+        "npm:partial-json@~0.1.7",
         "npm:react-dom@^18.3.1",
         "npm:react@^18.3.1",
         "npm:typescript@~5.6.2",
+        "npm:valibot@^1.0.0-beta.9",
         "npm:vite@^6.0.3"
       ]
     }
