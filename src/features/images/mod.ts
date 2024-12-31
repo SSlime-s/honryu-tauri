@@ -1,3 +1,4 @@
+// @ts-expect-error: vite/client の読み込みが Deno でうまく動かないから無理やり
 import screnshot from "../../assets/screenshot.png";
 import { removeMimeType, toBase64 } from "./base64.ts";
 

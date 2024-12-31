@@ -1,5 +1,6 @@
 import type { BaseProps } from "../mod.ts";
 import { invoke } from "@tauri-apps/api/core";
+// @ts-types="@types/react"
 import React, { useEffect, useId, useMemo, useState } from "react";
 import {
   createGenAIModel,

@@ -1,3 +1,4 @@
+// @ts-types="@types/react"
 import React, {
   useCallback,
   useEffect,
@@ -15,6 +16,7 @@ import { invoke } from "@tauri-apps/api/core";
 import * as v from "valibot";
 import { withMimeType } from "../../images/base64.ts";
 import type { BaseProps } from "../mod.ts";
+// @ts-expect-error: vite/client の読み込みが Deno でうまく動かないから無理やり
 import Crosshair from "../../../assets/crosshair.svg";
 
 const screenshotSchema = v.object({

@@ -1,4 +1,3 @@
-import React from "react";
 import { pageMachine } from "./features/page/machine.ts";
 import { useMachine } from "@xstate/react";
 import { ScreenshotPage } from "./features/page/screenshot/mod.tsx";

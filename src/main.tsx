@@ -1,4 +1,6 @@
+// @ts-types="@types/react"
 import React from "react";
+// @ts-types="@types/react-dom/client"
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
