@@ -61,6 +61,7 @@ export function ScreenshotPage({ send }: Props) {
 			// const screenshot = await mockedScreenshot();
 			setWholeImage(screenshot.image);
 
+			await window.setShadow(false);
 			await window.show();
 			// HACK: decorations が false のとき setSize が効かない
 			await window.setDecorations(true);
@@ -136,6 +137,7 @@ export function ScreenshotPage({ send }: Props) {
 			const result = v.safeParse(v.pipe(v.string(), v.base64()), cropped);
 
 			const window = getCurrentWindow();
+			await window.setShadow(true);
 			await window.setDecorations(true);
 			await window.setAlwaysOnTop(false);
 			// TODO: ちゃんとした値をいれる
