@@ -117,6 +117,12 @@ export function ScreenshotPage({ send }: Props) {
 			const dx = e.clientX - startX;
 			const dy = e.clientY - startY;
 
+			if (dx < 1 || dy < 1) {
+				setDragStart(null);
+				setDraggingPosition(null);
+				return;
+			}
+
 			setDraggingPosition(null);
 			setDragStart(null);
 
@@ -178,7 +184,7 @@ export function ScreenshotPage({ send }: Props) {
 		<div
 			className="size-full relative"
 			style={{
-				cursor: `url("${Crosshair}"), crosshair`,
+				cursor: `url("${Crosshair}") 15 15, crosshair`,
 			}}
 			onMouseDown={onMouseDown}
 			onMouseMove={onMouseMove}
