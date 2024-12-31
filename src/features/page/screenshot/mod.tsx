@@ -19,6 +19,7 @@ import * as v from "valibot";
 import { mockedScreenshot } from "../../images/mod.ts";
 import { withMimeType } from "../../images/base64.ts";
 import type { BaseProps } from "../mod.ts";
+import Crosshair from "../../../assets/crosshair.svg";
 
 const screenshotSchema = v.object({
   xy: v.tuple([v.number(), v.number()]),
@@ -167,7 +168,10 @@ export function ScreenshotPage({ pageState, send }: Props) {
 
   return (
     <div
-      className="size-full cursor-crosshair relative"
+      className="size-full relative"
+      style={{
+        cursor: `url("${Crosshair}"), crosshair`,
+      }}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
