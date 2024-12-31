@@ -17,11 +17,13 @@ import {
 import { invoke } from "@tauri-apps/api/core";
 import * as v from "valibot";
 import { mockedScreenshot } from "../../images/mod.ts";
+import { withMimeType } from "../../images/base64.ts";
 
 const screenshotSchema = v.object({
   xy: v.tuple([v.number(), v.number()]),
   wh: v.tuple([v.number(), v.number()]),
-  image: v.pipe(v.string(), v.base64()),
+  /** NOTE: base64 encode されたものだが、`v.base64` を通すとでかすぎて終わるため string だけチェック */
+  image: v.string(),
 });
 async function takeScreenshot() {
   const screenshotData = await invoke("take_screen_shot");
@@ -45,58 +47,51 @@ export function ScreenshotPage({ pageState, send }: Props) {
   const [draggingPosition, setDraggingPosition] = useState<Coordinate | null>(
     null,
   );
-  const [windowSize, setWindowSize] = useState<PhysicalSize | null>(null);
-  const [windowPosition, setWindowPosition] = useState<PhysicalPosition | null>(
-    null,
-  );
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [containerSize, setContainerSize] = useState<Coordinate | null>(null);
-  useEffect(() => {
+
+  const updateContainerSize = useCallback(() => {
     if (containerRef.current === null) {
       return;
     }
 
     const { width, height } = containerRef.current.getBoundingClientRect();
     setContainerSize([width, height]);
-
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        setContainerSize([width, height]);
-      }
-    });
-
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
   }, [containerRef.current]);
 
   useEffect(() => {
     (async function () {
-      const window = await getCurrentWindow();
+      const window = getCurrentWindow();
       await window.setDecorations(false);
-      await window.setAlwaysOnTop(true);
+      await window.setAlwaysOnBottom(true);
 
-      // const screenshot = await takeScreenshot();
-      const screenshot = await mockedScreenshot();
+      const screenshot = await takeScreenshot();
+      await window.setAlwaysOnBottom(false);
+      // const screenshot = await mockedScreenshot();
       setWholeImage(screenshot.image);
 
-      setWindowSize(await window.innerSize());
-      setWindowPosition(await window.innerPosition());
-
+      // HACK: decorations が false のとき setSize が効かない
+      await window.setDecorations(true);
       await window.setSize(
         new PhysicalSize(screenshot.wh[0], screenshot.wh[1]),
       );
-      await window.setMaxSize(
-        new PhysicalSize(screenshot.wh[0], screenshot.wh[1]),
-      );
+      await window.setDecorations(false);
       await window.setPosition(
         new PhysicalPosition(screenshot.xy[0], screenshot.xy[1]),
       );
+      await window.setAlwaysOnTop(true);
+      await window.setFocus();
+
+      updateContainerSize();
     })();
   }, []);
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
+    if (e.button !== 0) {
+      void getCurrentWindow().close();
+      return;
+    }
     setDragStart([e.clientX, e.clientY]);
   }, []);
   const onMouseMove = useCallback((e: React.MouseEvent) => {
@@ -123,16 +118,6 @@ export function ScreenshotPage({ pageState, send }: Props) {
     setDraggingPosition(null);
     setDragStart(null);
 
-    const window = getCurrentWindow();
-    if (windowSize !== null) {
-      await window.setSize(windowSize);
-    }
-    if (windowPosition !== null) {
-      await window.setPosition(windowPosition);
-    }
-    await window.setDecorations(true);
-    await window.setAlwaysOnTop(false);
-
     if (dx === 0 || dy === 0) {
       return;
     }
@@ -148,6 +133,15 @@ export function ScreenshotPage({ pageState, send }: Props) {
       wh: [w, h],
     });
     const result = v.safeParse(v.pipe(v.string(), v.base64()), cropped);
+
+    const window = getCurrentWindow();
+    await window.setDecorations(true);
+    await window.setAlwaysOnTop(false);
+    // TODO: ちゃんとした値をいれる
+    await window.setSize(new LogicalSize(800, 600));
+    await window.setPosition(new PhysicalPosition(100, 100));
+
+
     if (result.success) {
       send({ type: "taken", data: result.output });
     } else {
@@ -183,7 +177,7 @@ export function ScreenshotPage({ pageState, send }: Props) {
       ref={containerRef}
     >
       <img
-        src={wholeImage}
+        src={withMimeType(wholeImage, "png")}
         alt=""
         draggable={false}
         className="size-full"
@@ -209,6 +203,16 @@ export function ScreenshotPage({ pageState, send }: Props) {
             }`}
             fill="rgba(0, 0, 0, 0.5)"
           />
+          {draggingArea !== null && (
+            <rect
+              x={draggingArea.x}
+              y={draggingArea.y}
+              width={draggingArea.w}
+              height={draggingArea.h}
+              fill="none"
+              stroke="white"
+            />
+          )}
         </svg>
       )}
     </div>

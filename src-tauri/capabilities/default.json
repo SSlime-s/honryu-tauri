@@ -8,8 +8,12 @@
     "opener:default",
     "core:window:default",
     "core:window:allow-set-decorations",
+    "core:window:allow-set-size",
+    "core:window:allow-set-position",
     "core:window:allow-close",
     "core:window:allow-set-always-on-top",
+    "core:window:allow-set-always-on-bottom",
+    "core:window:allow-set-focus",
     "core:window:allow-maximize",
     "core:window:allow-minimize",
     "window-state:default"

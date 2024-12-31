@@ -7,7 +7,11 @@ import {
   createGenAIModel,
   transcribeAndTranslateImageStream,
 } from "./features/translate/mod.tsx";
-import { removeMimeType, toBase64 } from "./features/images/base64.ts";
+import {
+  removeMimeType,
+  toBase64,
+  withMimeType,
+} from "./features/images/base64.ts";
 import { saveWindowState, StateFlags } from "@tauri-apps/plugin-window-state";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import * as v from "valibot";
@@ -39,15 +43,13 @@ function App() {
   }
 
   async function toggle() {
-    const window = await getCurrentWindow();
+    const window = getCurrentWindow();
     const isDecorated = await window.isDecorated();
     await window.setDecorations(!isDecorated);
   }
 
   if (pageState.matches("Screenshot")) {
-    return (
-      <ScreenshotPage pageState={pageState} send={send} />
-    );
+    return <ScreenshotPage pageState={pageState} send={send} />;
   }
 
   return (
@@ -66,6 +68,13 @@ function App() {
         </a>
       </div>
       <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+
+      {pageState.context.latestScreenshot !== null && (
+        <img
+          src={withMimeType(pageState.context.latestScreenshot, "png")}
+          alt="Screenshot"
+        />
+      )}
 
       <form
         className="row"
