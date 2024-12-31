@@ -87,7 +87,6 @@ export async function* transcribeAndTranslateImageStream(
   const {
     stream,
     response,
-    
   } = await genAI.generateContentStream({
     contents: prepareContents(PROMPT, image),
   });

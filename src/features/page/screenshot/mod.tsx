@@ -141,7 +141,6 @@ export function ScreenshotPage({ pageState, send }: Props) {
     await window.setSize(new LogicalSize(800, 600));
     await window.setPosition(new PhysicalPosition(100, 100));
 
-
     if (result.success) {
       send({ type: "taken", data: result.output });
     } else {
