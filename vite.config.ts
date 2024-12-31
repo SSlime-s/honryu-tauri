@@ -3,9 +3,10 @@ import react from "@vitejs/plugin-react";
 import path from "node:path";
 
 // @ts-expect-error process is a nodejs global
-const host = process.env.TAURI_DEV_HOST;
+const host = Deno.env.get("TAURI_DEV_HOST");
 
 // https://vitejs.dev/config/
+// deno-lint-ignore require-await
 export default defineConfig(async () => ({
   plugins: [react()],
 
