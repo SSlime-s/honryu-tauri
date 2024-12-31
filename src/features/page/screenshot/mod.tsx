@@ -184,7 +184,7 @@ export function ScreenshotPage({ send }: Props) {
 		<div
 			className="size-full relative"
 			style={{
-				cursor: `url("${Crosshair}") 15 15, crosshair`,
+				cursor: `url("${Crosshair}") 12 12, crosshair`,
 			}}
 			onMouseDown={onMouseDown}
 			onMouseMove={onMouseMove}
