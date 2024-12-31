@@ -31,11 +31,10 @@ export const pageMachine = createMachine({
       on: {
         taken: {
           target: "ViewLoading",
-          actions: ({ context, event }) =>
-            assign({
-              ...context,
-              latestScreenshot: event.data,
-            }),
+          actions: assign(({ context, event }) => ({
+            ...context,
+            latestScreenshot: event.data,
+          })),
         },
       },
     },
