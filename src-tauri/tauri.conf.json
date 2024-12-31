@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "identifier": "com.honryu.app",
   "build": {
-    "beforeDevCommand": "deno task dev",
+    "beforeDevCommand": "pnpm run dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "deno task build",
+    "beforeBuildCommand": "pnpm run build",
     "frontendDist": "../dist"
   },
   "app": {

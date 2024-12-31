@@ -1,13 +1,13 @@
 import {
-  type EnhancedGenerateContentResponse,
-  type GenerateContentRequest,
-  type GenerativeModel,
-  GoogleGenerativeAI,
+	type EnhancedGenerateContentResponse,
+	type GenerateContentRequest,
+	type GenerativeModel,
+	GoogleGenerativeAI,
 } from "@google/generative-ai";
-import { GENERATION_CONFIG, SAFETY_SETTINGS } from "./settings.ts";
 import { Allow, parse } from "partial-json";
 import * as v from "valibot";
 import { partialResponseSchema, responseSchema } from "./schema.ts";
+import { GENERATION_CONFIG, SAFETY_SETTINGS } from "./settings.ts";
 
 const PROMPT = `
     Role: Professional Image Text Recognizer and Translator
@@ -43,91 +43,92 @@ const PROMPT = `
 `;
 
 export function createGenAIModel(
-  apiKey: string,
-  model: string = "gemini-1.5-flash-002",
+	apiKey: string,
+	model = "gemini-1.5-flash-002",
 ): GenerativeModel {
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const genModel = genAI.getGenerativeModel({
-    model,
-    generationConfig: GENERATION_CONFIG,
-    safetySettings: SAFETY_SETTINGS,
-  });
+	const genAI = new GoogleGenerativeAI(apiKey);
+	const genModel = genAI.getGenerativeModel({
+		model,
+		generationConfig: GENERATION_CONFIG,
+		safetySettings: SAFETY_SETTINGS,
+	});
 
-  return genModel;
+	return genModel;
 }
 
 function prepareContents(
-  prompt: string,
-  /** base64 encoded */
-  image: string,
+	prompt: string,
+	/** base64 encoded */
+	image: string,
 ): GenerateContentRequest["contents"] {
-  return [
-    {
-      role: "user",
-      parts: [{
-        text: prompt,
-      }],
-    },
-    {
-      role: "user",
-      parts: [{
-        inlineData: {
-          mimeType: "image/png",
-          data: image,
-        },
-      }],
-    },
-  ];
+	return [
+		{
+			role: "user",
+			parts: [
+				{
+					text: prompt,
+				},
+			],
+		},
+		{
+			role: "user",
+			parts: [
+				{
+					inlineData: {
+						mimeType: "image/png",
+						data: image,
+					},
+				},
+			],
+		},
+	];
 }
 
 export async function* transcribeAndTranslateImageStream(
-  genAI: GenerativeModel,
-  image: string,
+	genAI: GenerativeModel,
+	image: string,
 ) {
-  const {
-    stream,
-    response,
-  } = await genAI.generateContentStream({
-    contents: prepareContents(PROMPT, image),
-  });
+	const { stream, response } = await genAI.generateContentStream({
+		contents: prepareContents(PROMPT, image),
+	});
 
-  for await (const result of processRawResponse(stream, response)) {
-    yield result;
-  }
+	for await (const result of processRawResponse(stream, response)) {
+		yield result;
+	}
 }
 
 async function* processRawResponse(
-  stream: AsyncGenerator<EnhancedGenerateContentResponse, unknown, unknown>,
-  response: Promise<EnhancedGenerateContentResponse>,
+	stream: AsyncGenerator<EnhancedGenerateContentResponse, unknown, unknown>,
+	response: Promise<EnhancedGenerateContentResponse>,
 ) {
-  let allText = "";
-  for await (const chunk of stream) {
-    allText += chunk.text();
-    const result = parsePartialResponse(allText);
-    if (result.success) {
-      yield result.output;
-    } else {
-      console.error(result.issues);
-    }
-  }
+	let allText = "";
+	for await (const chunk of stream) {
+		allText += chunk.text();
+		const result = parsePartialResponse(allText);
+		if (result.success) {
+			yield result.output;
+		} else {
+			console.error(result.issues);
+		}
+	}
 
-  allText += (await response).text();
-  const result = parseFullResponse(allText);
-  if (result.success) {
-    yield result.output;
-  } else {
-    throw new Error(`Failed to parse response: ${result.issues}`);
-  }
+	allText += (await response).text();
+	const result = parseFullResponse(allText);
+	if (result.success) {
+		yield result.output;
+	} else {
+		throw new Error(`Failed to parse response: ${result.issues}`);
+	}
 }
 
 function parsePartialResponse(response: string) {
-  const json = parse(response, Allow.OBJ | Allow.STR);
+	const json = parse(response, Allow.OBJ | Allow.STR);
 
-  return v.safeParse(partialResponseSchema, json);
+	return v.safeParse(partialResponseSchema, json);
 }
 
 function parseFullResponse(response: string) {
-  const json = JSON.parse(response);
+	const json = JSON.parse(response);
 
-  return v.safeParse(responseSchema, json);
+	return v.safeParse(responseSchema, json);
 }
