@@ -18,6 +18,7 @@ import { invoke } from "@tauri-apps/api/core";
 import * as v from "valibot";
 import { mockedScreenshot } from "../../images/mod.ts";
 import { withMimeType } from "../../images/base64.ts";
+import type { BaseProps } from "../mod.ts";
 
 const screenshotSchema = v.object({
   xy: v.tuple([v.number(), v.number()]),
@@ -35,10 +36,7 @@ async function takeScreenshot() {
   }
 }
 
-interface Props {
-  pageState: ReturnType<typeof useMachine<typeof pageMachine>>[0];
-  send: ReturnType<typeof useMachine<typeof pageMachine>>[1];
-}
+interface Props extends BaseProps {}
 type Coordinate = [x: number, y: number];
 
 export function ScreenshotPage({ pageState, send }: Props) {
