@@ -11,6 +11,7 @@ import * as v from "valibot";
 import Crosshair from "../../../assets/crosshair.svg";
 import { withMimeType } from "../../images/base64.ts";
 import type { BaseProps } from "../mod.ts";
+import { register, unregister } from "@tauri-apps/plugin-global-shortcut";
 
 const screenshotSchema = v.object({
 	xy: v.tuple([v.number(), v.number()]),
@@ -73,6 +74,12 @@ export function ScreenshotPage({ send }: Props) {
 			await window.setAlwaysOnTop(true);
 			await window.setFocus();
 
+			await register("Esc", (event) => {
+				if (event.state === "Pressed") {
+					void getCurrentWindow().close();
+				}
+			});
+
 			updateContainerSize();
 		})();
 	}, [updateContainerSize]);
@@ -134,6 +141,8 @@ export function ScreenshotPage({ send }: Props) {
 			// TODO: ちゃんとした値をいれる
 			await window.setSize(new LogicalSize(800, 600));
 			await window.setPosition(new PhysicalPosition(100, 100));
+
+			await unregister("Esc");
 
 			if (result.success) {
 				send({ type: "taken", data: result.output });
