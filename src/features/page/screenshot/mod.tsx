@@ -54,14 +54,14 @@ export function ScreenshotPage({ send }: Props) {
 	useEffect(() => {
 		(async () => {
 			const window = getCurrentWindow();
+			await window.hide();
 			await window.setDecorations(false);
-			await window.setAlwaysOnBottom(true);
 
 			const screenshot = await takeScreenshot();
-			await window.setAlwaysOnBottom(false);
 			// const screenshot = await mockedScreenshot();
 			setWholeImage(screenshot.image);
 
+			await window.show();
 			// HACK: decorations が false のとき setSize が効かない
 			await window.setDecorations(true);
 			await window.setSize(

@@ -17,7 +17,7 @@
 				"height": 600,
 				"decorations": false,
 				"transparent": true,
-				"maxHeight": 0
+        "visible": false
 			}
 		],
 		"security": {
