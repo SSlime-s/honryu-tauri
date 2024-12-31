@@ -42,12 +42,11 @@ export const pageMachine = createMachine({
       on: {
         loaded: {
           target: "View",
-          actions: ({ context, event }) =>
-            assign({
-              ...context,
-              response: event.data,
-              history: context.history.concat(event.data),
-            }),
+          actions: assign(({ context, event }) => ({
+            ...context,
+            response: event.data,
+            history: context.history.concat(event.data),
+          })),
         },
       },
     },
