@@ -1,15 +1,14 @@
 import { invoke } from "@tauri-apps/api/core";
-import React, { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as v from "valibot";
 import { Button } from "../../../components/ui/button.tsx";
-import { Label } from "../../../components/ui/label.tsx";
-import { Textarea } from "../../../components/ui/textarea.tsx";
 import {
 	createGenAIModel,
 	transcribeAndTranslateImageStream,
 } from "../../translate/mod.tsx";
 import { type Response, responseSchema } from "../../translate/schema.ts";
 import type { BaseProps } from "../mod.ts";
+import { TextBlock, TextBlockSkeleton } from "./TextBlock.tsx";
 
 interface Props extends BaseProps {}
 
@@ -68,38 +67,6 @@ export function MainView({ pageState, send }: Props) {
 
 	const responseOrPartial = isLoading ? partialResponse : response;
 
-	const textareaId = useId();
-	const jaId = `${textareaId}-ja`;
-	const enId = `${textareaId}-en`;
-
-	const jaBlock = useMemo(() => {
-		if (responseOrPartial === null) {
-			// TODO
-			return null;
-		}
-
-		return (
-			<div>
-				<Label htmlFor={jaId}>Japanese</Label>
-				<Textarea id={jaId} readOnly value={responseOrPartial.ja} />
-			</div>
-		);
-	}, [responseOrPartial, jaId]);
-
-	const enBlock = useMemo(() => {
-		if (responseOrPartial === null) {
-			// TODO
-			return null;
-		}
-
-		return (
-			<div>
-				<Label htmlFor={enId}>English</Label>
-				<Textarea id={enId} readOnly value={responseOrPartial.en} />
-			</div>
-		);
-	}, [responseOrPartial, enId]);
-
 	return (
 		<div>
 			<p>
@@ -108,15 +75,22 @@ export function MainView({ pageState, send }: Props) {
 					? responseOrPartial.detected_language
 					: "loading..."}
 			</p>
-			{responseOrPartial?.detected_language === "ja"
-				? [
-						<React.Fragment key="ja">{jaBlock}</React.Fragment>,
-						<React.Fragment key="en">{enBlock}</React.Fragment>,
-					]
-				: [
-						<React.Fragment key="en">{enBlock}</React.Fragment>,
-						<React.Fragment key="ja">{jaBlock}</React.Fragment>,
-					]}
+			{responseOrPartial === null ? (
+				<>
+					<TextBlockSkeleton />
+					<TextBlockSkeleton />
+				</>
+			) : responseOrPartial.detected_language === "ja" ? (
+				<>
+					<TextBlock label="Japanese" content={responseOrPartial.ja ?? ""} />
+					<TextBlock label="English" content={responseOrPartial.en ?? ""} />
+				</>
+			) : (
+				<>
+					<TextBlock label="English" content={responseOrPartial.en ?? ""} />
+					<TextBlock label="Japanese" content={responseOrPartial.ja ?? ""} />
+				</>
+			)}
 
 			<Button
 				type="button"
