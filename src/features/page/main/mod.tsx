@@ -17,6 +17,7 @@ import {
 	Moon,
 	Scan,
 } from "lucide-react";
+import { useHistory } from "./useHistory.tsx";
 
 interface Props extends BaseProps {}
 
@@ -28,7 +29,7 @@ export function MainView({ pageState, send }: Props) {
 		() => pageState.matches("ViewLoading"),
 		[pageState],
 	);
-	const response = useMemo(() => pageState.context.response, [pageState]);
+	const historyManager = useHistory(pageState.context.history);
 
 	useEffect(() => {
 		if (isLoading) {
@@ -73,7 +74,9 @@ export function MainView({ pageState, send }: Props) {
 		}
 	}, [isLoading, pageState.context.latestScreenshot, send]);
 
-	const responseOrPartial = isLoading ? partialResponse : response;
+	const responseOrPartial = isLoading
+		? partialResponse
+		: historyManager.current;
 
 	return (
 		<div className="size-full grid grid-rows-[auto,1fr] gap-1">
@@ -87,10 +90,22 @@ export function MainView({ pageState, send }: Props) {
 				</Button>
 				<div className="flex items-center gap-1">
 					<div className="flex items-center">
-						<Button type="button" variant="ghost" size="icon">
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							disabled={!historyManager.hasPrev}
+							onClick={historyManager.prev}
+						>
 							<ChevronLeft />
 						</Button>
-						<Button type="button" variant="ghost" size="icon">
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							disabled={!historyManager.hasNext}
+							onClick={historyManager.next}
+						>
 							<ChevronRight />
 						</Button>
 					</div>

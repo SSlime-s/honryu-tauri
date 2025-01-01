@@ -48,7 +48,7 @@ export const pageMachine = createMachine({
 					actions: assign(({ context, event }) => ({
 						...context,
 						response: event.data,
-						history: context.history.concat(event.data),
+						history: [event.data, ...context.history],
 					})),
 				},
 			},
