@@ -9,6 +9,14 @@ import {
 import { type Response, responseSchema } from "../../translate/schema.ts";
 import type { BaseProps } from "../mod.ts";
 import { TextBlock, TextBlockSkeleton } from "./TextBlock.tsx";
+import {
+	ChevronLeft,
+	ChevronRight,
+	History,
+	Loader2,
+	Moon,
+	Scan,
+} from "lucide-react";
 
 interface Props extends BaseProps {}
 
@@ -68,37 +76,58 @@ export function MainView({ pageState, send }: Props) {
 	const responseOrPartial = isLoading ? partialResponse : response;
 
 	return (
-		<div>
-			<p>
-				detected language:{" "}
-				{responseOrPartial?.detected_language !== undefined
-					? responseOrPartial.detected_language
-					: "loading..."}
-			</p>
-			{responseOrPartial === null ? (
-				<>
-					<TextBlockSkeleton />
-					<TextBlockSkeleton />
-				</>
-			) : responseOrPartial.detected_language === "ja" ? (
-				<>
-					<TextBlock label="Japanese" content={responseOrPartial.ja ?? ""} />
-					<TextBlock label="English" content={responseOrPartial.en ?? ""} />
-				</>
-			) : (
-				<>
-					<TextBlock label="English" content={responseOrPartial.en ?? ""} />
-					<TextBlock label="Japanese" content={responseOrPartial.ja ?? ""} />
-				</>
-			)}
-
-			<Button
-				type="button"
-				disabled={isLoading}
-				onClick={() => send({ type: "toScreenshot" })}
-			>
-				Back
-			</Button>
+		<div className="size-full grid grid-rows-[auto,1fr] gap-1">
+			<header className="flex items-center border-b px-4 py-2 justify-between">
+				<Button
+					type="button"
+					disabled={isLoading}
+					onClick={() => send({ type: "toScreenshot" })}
+				>
+					{isLoading ? <Loader2 className="animate-spin" /> : <Scan />} New
+				</Button>
+				<div className="flex items-center gap-1">
+					<div className="flex items-center">
+						<Button type="button" variant="ghost" size="icon">
+							<ChevronLeft />
+						</Button>
+						<Button type="button" variant="ghost" size="icon">
+							<ChevronRight />
+						</Button>
+					</div>
+					<Button type="button" variant="ghost" size="icon">
+						<History />
+					</Button>
+					<Button type="button" variant="outline" size="icon">
+						<Moon />
+					</Button>
+				</div>
+			</header>
+			<main className="grid grid-rows-[1fr,1fr] gap-2 p-4">
+				{responseOrPartial === null ? (
+					<>
+						<TextBlockSkeleton />
+						<TextBlockSkeleton />
+					</>
+				) : responseOrPartial.detected_language === "ja" ? (
+					<>
+						<TextBlock
+							label="Japanese"
+							content={responseOrPartial.ja ?? ""}
+							isDetected
+						/>
+						<TextBlock label="English" content={responseOrPartial.en ?? ""} />
+					</>
+				) : (
+					<>
+						<TextBlock
+							label="English"
+							content={responseOrPartial.en ?? ""}
+							isDetected
+						/>
+						<TextBlock label="Japanese" content={responseOrPartial.ja ?? ""} />
+					</>
+				)}
+			</main>
 		</div>
 	);
 }
