@@ -1,5 +1,5 @@
 import { assign, createMachine } from "xstate";
-import type { Response } from "../translate/schema.ts";
+import type { Response, ResponseWithTime } from "../translate/schema.ts";
 
 export const pageMachine = createMachine({
 	/** @xstate-layout N4IgpgJg5mDOIC5QAcCGMB0BlAxgJzDADtYALAewBcBiS1Aa2IG0AGAXURXNgEtKfyRTiAAeiAIwAOACwZxANkkB2eUoCcS6SyWSArABoQATwkBmFhl2mlultMmT5amZNMBfN4bSYAajzAA7rTkuATEZFSsHEggyNx8AkIxYghSsgrKqhpaOgbGiJLiGKq2LABM0mXi4lqKHp4gROQQcMLeYG3x-ILCKQC08oYmCH26GGoTk1NT7g3t2PiEJBSUnbzdSaAplUMF8uPS6uIa8grWeh5e6GAYfoFrCT3JiKbSphhvNlKSagpqVbsED8Podficzrl6m4gA */
@@ -9,7 +9,7 @@ export const pageMachine = createMachine({
 		context: {} as {
 			latestScreenshot: string | null;
 			response: Response | null;
-			history: Response[];
+			history: ResponseWithTime[];
 		},
 		events: {} as
 			| {
@@ -48,7 +48,7 @@ export const pageMachine = createMachine({
 					actions: assign(({ context, event }) => ({
 						...context,
 						response: event.data,
-						history: [event.data, ...context.history],
+						history: [{ ...event.data, time: new Date() }, ...context.history],
 					})),
 				},
 			},

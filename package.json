@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@google/generative-ai": "^0.21.0",
+		"@radix-ui/react-dialog": "^1.1.4",
 		"@radix-ui/react-label": "^2.1.1",
 		"@radix-ui/react-slot": "^1.1.1",
 		"@tauri-apps/api": "^2",
@@ -22,6 +23,7 @@
 		"@xstate/react": "^5.0.1",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
+		"date-fns": "^4.1.0",
 		"lucide-react": "^0.469.0",
 		"partial-json": "^0.1.7",
 		"react": "^18.3.1",

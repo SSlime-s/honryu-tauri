@@ -1,15 +1,20 @@
-import type { Response } from "@/features/translate/schema";
+import type { ResponseWithTime } from "@/features/translate/schema";
 import { useCallback, useMemo, useState } from "react";
 
 interface HistoryManager {
-	current: Response;
+	history: readonly ResponseWithTime[];
+	current: ResponseWithTime;
+	currentIndex: number;
 	hasPrev: boolean;
 	hasNext: boolean;
 	prev: () => void;
 	next: () => void;
+	setIndex: (index: number) => void;
 }
 
-export function useHistory(history: readonly Response[]): HistoryManager {
+export function useHistory(
+	history: readonly ResponseWithTime[],
+): HistoryManager {
 	const [index, setIndex] = useState(0);
 
 	const hasPrev = index < history.length - 1;
@@ -29,5 +34,23 @@ export function useHistory(history: readonly Response[]): HistoryManager {
 		}
 	}, [hasNext]);
 
-	return { current, hasPrev, hasNext, prev, next };
+	const setIndexWrapped = useCallback(
+		(index: number) => {
+			if (index >= 0 && index < history.length) {
+				setIndex(index);
+			}
+		},
+		[history],
+	);
+
+	return {
+		history,
+		current,
+		currentIndex: index,
+		hasPrev,
+		hasNext,
+		prev,
+		next,
+		setIndex: setIndexWrapped,
+	};
 }

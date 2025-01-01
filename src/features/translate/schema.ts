@@ -18,4 +18,6 @@ export const responseSchema = v.object({
 });
 export type Response = v.InferOutput<typeof responseSchema>;
 
+export type ResponseWithTime = Response & { time: Date };
+
 export const partialResponseSchema = v.partial(responseSchema);

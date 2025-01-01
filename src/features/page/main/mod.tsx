@@ -18,6 +18,7 @@ import {
 	Scan,
 } from "lucide-react";
 import { useHistory } from "./useHistory.tsx";
+import { HistoryDialog } from "./HistoryDialog.tsx";
 
 interface Props extends BaseProps {}
 
@@ -109,9 +110,16 @@ export function MainView({ pageState, send }: Props) {
 							<ChevronRight />
 						</Button>
 					</div>
-					<Button type="button" variant="ghost" size="icon">
-						<History />
-					</Button>
+					<HistoryDialog
+						history={historyManager.history}
+						currentIndex={historyManager.currentIndex}
+						setIndex={historyManager.setIndex}
+						trigger={
+							<Button type="button" variant="ghost" size="icon">
+								<History />
+							</Button>
+						}
+					/>
 					<Button type="button" variant="outline" size="icon">
 						<Moon />
 					</Button>
