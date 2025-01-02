@@ -1,4 +1,8 @@
-use std::env;
+use std::{
+    collections::HashMap,
+    env, fs,
+    sync::{LazyLock, Mutex},
+};
 
 use base64::{engine::general_purpose, Engine};
 use serde::{Deserialize, Serialize};
@@ -15,6 +19,57 @@ fn greet(name: &str) -> String {
 async fn get_api_key() -> Result<String, String> {
     dotenv::from_filename(".env.local").ok();
     env::var("GENAI_API_KEY").map_err(|_| "GENAI_API_KEY is not set".to_string())
+}
+
+const CONFIG_FILE_NAME: &str = "config";
+#[cfg(debug_assertions)]
+fn get_config_path() -> anyhow::Result<String> {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let parent = std::path::Path::new(manifest_dir)
+        .parent()
+        .ok_or_else(|| anyhow::anyhow!("manifest dir has no parent"))?;
+    let config_path = parent.join(format!("{}.local", CONFIG_FILE_NAME));
+    Ok(config_path.to_string_lossy().to_string())
+}
+#[cfg(not(debug_assertions))]
+fn get_config_path() -> anyhow::Result<String> {
+    let exe_path = env::current_exe()?;
+    let exe_dir = exe_path
+        .parent()
+        .ok_or_else(|| anyhow::anyhow!("exe path has no parent"))?;
+    let config_path = exe_dir.join(CONFIG_FILE_NAME);
+    Ok(config_path.to_string_lossy().to_string())
+}
+static CONFIG: LazyLock<Mutex<anyhow::Result<HashMap<String, String>>>> = LazyLock::new(|| {
+    let config_path = get_config_path();
+    let config_path = match config_path {
+        Ok(config_path) => config_path,
+        Err(e) => return Mutex::new(Err(e)),
+    };
+    let config = fs::read_to_string(config_path);
+    let config = match config {
+        Ok(config) => config,
+        Err(e) => return Mutex::new(Err(e.into())),
+    };
+    let config = config
+        .lines()
+        .flat_map(|line| {
+            if line.starts_with('#') {
+                return None;
+            }
+            if line.trim().is_empty() {
+                return None;
+            }
+            let (key, value) = line.split_once('=').unwrap();
+            Some((key.to_string(), value.to_string()))
+        })
+        .collect::<HashMap<String, String>>();
+    Mutex::new(Ok(config))
+});
+#[tauri::command]
+async fn get_config() -> Result<HashMap<String, String>, String> {
+    let config = CONFIG.lock().map_err(|e| e.to_string())?;
+    config.as_ref().map_err(|e| e.to_string()).cloned()
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
@@ -74,7 +129,8 @@ pub fn run() {
             greet,
             get_api_key,
             take_screen_shot,
-            crop_image
+            crop_image,
+            get_config
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

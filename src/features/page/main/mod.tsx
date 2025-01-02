@@ -38,18 +38,26 @@ export function MainView({ pageState, send }: Props) {
 			const { signal } = abortController;
 
 			(async () => {
-				const token = await invoke("get_api_key");
-				const tokenResult = v.safeParse(v.string(), token);
-				if (!tokenResult.success) {
-					throw new Error(`failed to parse token: ${tokenResult.issues}`);
+				const config = await invoke("get_config");
+				const configResult = v.safeParse(
+					v.record(v.string(), v.string()),
+					config,
+				);
+				if (!configResult.success) {
+					throw new Error(`failed to parse config: ${configResult.issues}`);
 				}
 				if (pageState.context.latestScreenshot === null) {
 					throw new Error("latest screenshot is null");
 				}
 
-				const model = createGenAIModel(tokenResult.output);
+				const token = configResult.output.GENAI_API_KEY;
+				const model = configResult.output.GENAI_MODEL;
+				if (token === undefined) {
+					throw new Error("GENAI_API_KEY is not defined");
+				}
+				const genaiModel = createGenAIModel(token, model);
 				const stream = transcribeAndTranslateImageStream(
-					model,
+					genaiModel,
 					pageState.context.latestScreenshot,
 				);
 				let responseSnapshot: Partial<Response> | null = null;
