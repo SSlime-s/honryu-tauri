@@ -202,6 +202,8 @@ export function ScreenshotPage({ send }: Props) {
 			className="size-full relative"
 			style={{
 				cursor: `url("${Crosshair}") 12 12, crosshair`,
+				height: originalSize?.[1],
+				width: originalSize?.[0],
 			}}
 			onMouseDown={onMouseDown}
 			onMouseMove={onMouseMove}
