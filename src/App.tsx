@@ -4,7 +4,6 @@ import { MainView } from "./features/page/main/mod.tsx";
 import { ScreenshotPage } from "./features/page/screenshot/mod.tsx";
 import { ThemeProvider } from "./features/theme/useTheme.tsx";
 import { useEternalHistory } from "./features/translate/useEternalHistory.tsx";
-import { useEffect } from "react";
 
 function AppInner() {
 	const { history, push } = useEternalHistory();
