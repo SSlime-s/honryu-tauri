@@ -143,6 +143,7 @@ export function ScreenshotPage({ send }: Props) {
 			const result = v.safeParse(v.pipe(v.string(), v.base64()), cropped);
 
 			const window = getCurrentWindow();
+			await window.hide();
 			await window.setShadow(true);
 			await window.setDecorations(true);
 			await window.setAlwaysOnTop(false);

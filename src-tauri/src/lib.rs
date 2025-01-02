@@ -121,9 +121,11 @@ async fn crop_image(image: String, xy: (i32, i32), wh: (u32, u32)) -> Result<Str
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let mut ctx = tauri::generate_context!();
     tauri::Builder::default()
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_theme::init(ctx.config_mut()))
         // .plugin(tauri_plugin_window_state::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
             greet,
@@ -132,6 +134,6 @@ pub fn run() {
             crop_image,
             get_config
         ])
-        .run(tauri::generate_context!())
+        .run(ctx)
         .expect("error while running tauri application");
 }

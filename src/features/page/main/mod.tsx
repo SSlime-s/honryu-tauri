@@ -16,21 +16,32 @@ import {
 	Loader2,
 	Moon,
 	Scan,
+	Sun,
 } from "lucide-react";
 import { useHistory } from "./useHistory.tsx";
 import { HistoryDialog } from "./HistoryDialog.tsx";
+import { useTheme } from "../../theme/useTheme.tsx";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 interface Props extends BaseProps {}
 
 export function MainView({ pageState, send }: Props) {
 	const [partialResponse, setPartialResponse] =
 		useState<Partial<Response> | null>(null);
+	const { theme, toggle: toggleTheme, isLoading: isThemeLoading } = useTheme();
 
 	const isLoading = useMemo(
 		() => pageState.matches("ViewLoading"),
 		[pageState],
 	);
 	const historyManager = useHistory(pageState.context.history);
+
+	useEffect(() => {
+		if (!isThemeLoading) {
+			const window = getCurrentWindow();
+			void window.show();
+		}
+	}, [isThemeLoading]);
 
 	useEffect(() => {
 		if (isLoading) {
@@ -128,8 +139,13 @@ export function MainView({ pageState, send }: Props) {
 							</Button>
 						}
 					/>
-					<Button type="button" variant="outline" size="icon">
-						<Moon />
+					<Button
+						type="button"
+						variant="outline"
+						size="icon"
+						onClick={toggleTheme}
+					>
+						{theme === "light" ? <Moon /> : <Sun />}
 					</Button>
 				</div>
 			</header>
