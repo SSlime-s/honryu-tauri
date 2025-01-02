@@ -9,7 +9,8 @@
 		"preview": "vite preview",
 		"tauri": "tauri",
 		"biome": "biome check .",
-		"biome:fix": "biome check --write ."
+		"biome:fix": "biome check --write .",
+		"check-types": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@google/generative-ai": "^0.21.0",
