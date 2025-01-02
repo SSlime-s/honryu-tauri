@@ -34,6 +34,7 @@ type Coordinate = [x: number, y: number];
 
 export function ScreenshotPage({ send }: Props) {
 	const [wholeImage, setWholeImage] = useState<string | null>(null);
+	const [originalSize, setOriginalSize] = useState<Coordinate | null>(null);
 	const [dragStart, setDragStart] = useState<Coordinate | null>(null);
 	const [draggingPosition, setDraggingPosition] = useState<Coordinate | null>(
 		null,
@@ -60,6 +61,7 @@ export function ScreenshotPage({ send }: Props) {
 			const screenshot = await takeScreenshot();
 			// const screenshot = await mockedScreenshot();
 			setWholeImage(screenshot.image);
+			setOriginalSize(screenshot.wh);
 
 			await window.setShadow(false);
 			await window.show();
@@ -129,11 +131,25 @@ export function ScreenshotPage({ send }: Props) {
 			if (dx === 0 || dy === 0) {
 				return;
 			}
+			if (containerRef.current === null) {
+				return;
+			}
 
-			const x = Math.min(startX, e.clientX);
-			const y = Math.min(startY, e.clientY);
-			const w = Math.abs(dx);
-			const h = Math.abs(dy);
+			const { width: containerWidth, height: containerHeight } =
+				containerRef.current.getBoundingClientRect();
+			if (containerWidth <= 0 || containerHeight <= 0) {
+				return;
+			}
+			if (originalSize === null) {
+				return;
+			}
+			const ratioX = containerWidth / originalSize[0];
+			const ratioY = containerHeight / originalSize[1];
+
+			const x = Math.round(Math.min(startX, e.clientX) / ratioX);
+			const y = Math.round(Math.min(startY, e.clientY) / ratioY);
+			const w = Math.round(Math.abs(dx) / ratioX);
+			const h = Math.round(Math.abs(dy) / ratioY);
 
 			const cropped = await invoke("crop_image", {
 				image: wholeImage,
@@ -159,7 +175,7 @@ export function ScreenshotPage({ send }: Props) {
 				console.error(`failed to parse cropped image: ${result.issues}`);
 			}
 		},
-		[dragStart, wholeImage, send],
+		[dragStart, wholeImage, originalSize, send],
 	);
 
 	const draggingArea = useMemo(() => {
