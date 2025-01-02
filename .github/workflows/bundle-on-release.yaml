@@ -1,8 +1,9 @@
 name: "publish"
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
 
 jobs:
   publish-tauri:
@@ -53,5 +54,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          releaseId: ${{ github.event.release.id }}
+          tagName: ${{ github.ref }}
+          releaseName: ${{ github.ref }}
+          releaseBody: "See the assets to download this version and install."
+          releaseDraft: true
           args: ${{ matrix.args }}
