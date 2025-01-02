@@ -27,12 +27,12 @@ export function HistoryDialog({
 		<Dialog>
 			<DialogTrigger asChild>{trigger}</DialogTrigger>
 
-			<DialogContent>
+			<DialogContent className="max-h-[80vh] overflow-hidden flex flex-col">
 				<DialogHeader>
 					<DialogTitle>History</DialogTitle>
 				</DialogHeader>
 
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-2 overflow-auto">
 					{history.map((response, index) => (
 						<HistoryItem
 							// biome-ignore lint/suspicious/noArrayIndexKey: 現状履歴削除などはなく、すべてリレンダリングされるため関係ない
