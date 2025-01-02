@@ -17,7 +17,11 @@ export const responseSchema = v.object({
 	en: v.string(),
 });
 export type Response = v.InferOutput<typeof responseSchema>;
+export const responseWithTimeSchema = v.intersect([
+	responseSchema,
+	v.object({ time: v.date() }),
+]);
 
-export type ResponseWithTime = Response & { time: Date };
+export type ResponseWithTime = v.InferOutput<typeof responseWithTimeSchema>;
 
 export const partialResponseSchema = v.partial(responseSchema);

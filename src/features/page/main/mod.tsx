@@ -6,7 +6,11 @@ import {
 	createGenAIModel,
 	transcribeAndTranslateImageStream,
 } from "../../translate/mod.tsx";
-import { type Response, responseSchema } from "../../translate/schema.ts";
+import {
+	type Response,
+	responseSchema,
+	type ResponseWithTime,
+} from "../../translate/schema.ts";
 import type { BaseProps } from "../mod.ts";
 import { TextBlock, TextBlockSkeleton } from "./TextBlock.tsx";
 import {
@@ -23,9 +27,12 @@ import { HistoryDialog } from "./HistoryDialog.tsx";
 import { useTheme } from "../../theme/useTheme.tsx";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
-interface Props extends BaseProps {}
+interface Props extends BaseProps {
+	history: readonly ResponseWithTime[];
+	pushHistory: (response: ResponseWithTime) => void;
+}
 
-export function MainView({ pageState, send }: Props) {
+export function MainView({ pageState, send, history, pushHistory }: Props) {
 	const [partialResponse, setPartialResponse] =
 		useState<Partial<Response> | null>(null);
 	const { theme, toggle: toggleTheme, isLoading: isThemeLoading } = useTheme();
@@ -34,7 +41,7 @@ export function MainView({ pageState, send }: Props) {
 		() => pageState.matches("ViewLoading"),
 		[pageState],
 	);
-	const historyManager = useHistory(pageState.context.history);
+	const historyManager = useHistory(history);
 
 	useEffect(() => {
 		if (!isThemeLoading) {
@@ -86,13 +93,17 @@ export function MainView({ pageState, send }: Props) {
 				}
 
 				send({ type: "loaded", data: streamResult.output });
+				pushHistory({
+					...streamResult.output,
+					time: new Date(),
+				});
 			})();
 
 			return () => {
 				abortController.abort();
 			};
 		}
-	}, [isLoading, pageState.context.latestScreenshot, send]);
+	}, [isLoading, pageState.context.latestScreenshot, send, pushHistory]);
 
 	const responseOrPartial = isLoading
 		? partialResponse
@@ -150,7 +161,7 @@ export function MainView({ pageState, send }: Props) {
 				</div>
 			</header>
 			<main className="grid grid-rows-[1fr,1fr] gap-2 p-4">
-				{responseOrPartial === null ? (
+				{responseOrPartial === null || responseOrPartial === undefined ? (
 					<>
 						<TextBlockSkeleton />
 						<TextBlockSkeleton />

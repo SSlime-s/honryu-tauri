@@ -68,7 +68,10 @@ function HistoryItem({
 	return (
 		<Card
 			onClick={onClick}
-			className={cn("cursor-pointer", isCurrent && "bg-gray-100")}
+			className={cn(
+				"cursor-pointer transition-colors",
+				isCurrent && "bg-accent",
+			)}
 		>
 			<CardHeader>
 				<CardTitle>{formatISO9075(response.time)}</CardTitle>
