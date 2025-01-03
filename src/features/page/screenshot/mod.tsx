@@ -58,22 +58,22 @@ export function ScreenshotPage({ send }: Props) {
 
 	useEffect(() => {
 		(async () => {
-			const window = getCurrentWindow();
+			const currentWindow = getCurrentWindow();
 			const isMac = isMacOs();
 			const isWin = isWindows();
-			await window.hide();
-			await window.setDecorations(false);
+			await currentWindow.hide();
+			await currentWindow.setDecorations(false);
 
 			const screenshot = await takeScreenshot();
 			// const screenshot = await mockedScreenshot();
 			setWholeImage(screenshot.image);
 			setOriginalSize(screenshot.wh);
 
-			await window.setShadow(false);
-			await window.show();
+			await currentWindow.setShadow(false);
+			await currentWindow.show();
 			const Position = isWin ? PhysicalPosition : LogicalPosition;
-			const Size = isWin ? LogicalSize : PhysicalSize;
-			await window.setPosition(
+			const Size = isWin ? PhysicalSize : LogicalSize;
+			await currentWindow.setPosition(
 				new Position(
 					screenshot.xy[0],
 					// NOTE: MacOS ではメニューバーの位置の座標分ずれちゃうから補正
@@ -81,14 +81,16 @@ export function ScreenshotPage({ send }: Props) {
 				),
 			);
 			// HACK: windows では decorations が false のとき setSize が効かない
-			isWin && (await window.setDecorations(true));
-			await window.setSize(new Size(screenshot.wh[0], screenshot.wh[1]));
-			isWin && (await window.setDecorations(false));
-			// NOTE: macOS では物理ピクセル基準で配置されるっぽいから Mac 以外だけ論理ピクセルに変換
-			!isMac && setScaleFactor(await window.scaleFactor());
+			isWin && (await currentWindow.setDecorations(true));
+			await currentWindow.setSize(new Size(screenshot.wh[0], screenshot.wh[1]));
 
-			await window.setAlwaysOnTop(true);
-			await window.setFocus();
+			isWin && (await currentWindow.setDecorations(false));
+
+			// NOTE: macOS では物理ピクセル基準で配置されるっぽいから Mac 以外だけ論理ピクセルに変換
+			!isMac && setScaleFactor(window.devicePixelRatio);
+
+			await currentWindow.setAlwaysOnTop(true);
+			await currentWindow.setFocus();
 
 			await register("Esc", (event) => {
 				if (event.state === "Pressed") {
