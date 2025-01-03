@@ -42,4 +42,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 Windows 11, macOS, Linux (not wayland)
 
-but I only tested on Windows 11
+but I only tested on Windows 11 and **recommend** using it on Windows 11.
+
+Notice: On macOS, application windows cannot span across multiple screens by default, so they can only be displayed on a specific display.
