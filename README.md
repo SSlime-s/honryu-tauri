@@ -20,7 +20,9 @@ This is Tauri rewrite of [Honryu](https://github.com/trasta298/honryu).
 1. Install from Release assets
   - From the latest release on https://github.com/SSlime-s/honryu-tauri/releases/latest, install the appropriate version for your OS.
 
-2. Set up your Gemini API key and optionally specify the model:
+2. (On macOS) Since the certificate does not exist, please execute xattr -rc /Applications/honryu.app (Use at your own risk).
+
+3. Set up your Gemini API key and optionally specify the model:
    - Create a `config` file in the same directory as the executable
    - Add your API key to the file:
      ```
