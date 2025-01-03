@@ -3,6 +3,7 @@ import {
 	LogicalPosition,
 	LogicalSize,
 	PhysicalPosition,
+	PhysicalSize,
 	getCurrentWindow,
 } from "@tauri-apps/api/window";
 import type React from "react";
@@ -70,8 +71,10 @@ export function ScreenshotPage({ send }: Props) {
 
 			await window.setShadow(false);
 			await window.show();
+			const Position = isWin ? PhysicalPosition : LogicalPosition;
+			const Size = isWin ? LogicalSize : PhysicalSize;
 			await window.setPosition(
-				new LogicalPosition(
+				new Position(
 					screenshot.xy[0],
 					// NOTE: MacOS ではメニューバーの位置の座標分ずれちゃうから補正
 					screenshot.xy[1] - (isMac ? MAC_OS_MENU_BAR_HEIGHT : 0),
@@ -79,7 +82,7 @@ export function ScreenshotPage({ send }: Props) {
 			);
 			// HACK: windows では decorations が false のとき setSize が効かない
 			isWin && (await window.setDecorations(true));
-			await window.setSize(new LogicalSize(screenshot.wh[0], screenshot.wh[1]));
+			await window.setSize(new Size(screenshot.wh[0], screenshot.wh[1]));
 			isWin && (await window.setDecorations(false));
 			// NOTE: macOS では物理ピクセル基準で配置されるっぽいから Mac 以外だけ論理ピクセルに変換
 			!isMac && setScaleFactor(await window.scaleFactor());
