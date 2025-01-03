@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import {
+	LogicalPosition,
 	LogicalSize,
 	PhysicalPosition,
-	PhysicalSize,
 	getCurrentWindow,
 } from "@tauri-apps/api/window";
 import type React from "react";
@@ -12,6 +12,8 @@ import Crosshair from "../../../assets/crosshair.svg";
 import { withMimeType } from "../../images/base64.ts";
 import type { BaseProps } from "../mod.ts";
 import { register, unregister } from "@tauri-apps/plugin-global-shortcut";
+import { isMacOs, isWindows } from "@/features/os/isOsType.ts";
+import { MAC_OS_MENU_BAR_HEIGHT } from "@/features/os/mod.ts";
 
 const screenshotSchema = v.object({
 	xy: v.tuple([v.number(), v.number()]),
@@ -42,6 +44,7 @@ export function ScreenshotPage({ send }: Props) {
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	const [containerSize, setContainerSize] = useState<Coordinate | null>(null);
+	const [scaleFactor, setScaleFactor] = useState<number | null>(null);
 
 	const updateContainerSize = useCallback(() => {
 		if (containerRef.current === null) {
@@ -55,6 +58,8 @@ export function ScreenshotPage({ send }: Props) {
 	useEffect(() => {
 		(async () => {
 			const window = getCurrentWindow();
+			const isMac = isMacOs();
+			const isWin = isWindows();
 			await window.hide();
 			await window.setDecorations(false);
 
@@ -65,15 +70,20 @@ export function ScreenshotPage({ send }: Props) {
 
 			await window.setShadow(false);
 			await window.show();
-			// HACK: decorations が false のとき setSize が効かない
-			await window.setDecorations(true);
-			await window.setSize(
-				new PhysicalSize(screenshot.wh[0], screenshot.wh[1]),
-			);
-			await window.setDecorations(false);
 			await window.setPosition(
-				new PhysicalPosition(screenshot.xy[0], screenshot.xy[1]),
+				new LogicalPosition(
+					screenshot.xy[0],
+					// NOTE: MacOS ではメニューバーの位置の座標分ずれちゃうから補正
+					screenshot.xy[1] - (isMac ? MAC_OS_MENU_BAR_HEIGHT : 0),
+				),
 			);
+			// HACK: windows では decorations が false のとき setSize が効かない
+			isWin && (await window.setDecorations(true));
+			await window.setSize(new LogicalSize(screenshot.wh[0], screenshot.wh[1]));
+			isWin && (await window.setDecorations(false));
+			// NOTE: macOS では物理ピクセル基準で配置されるっぽいから Mac 以外だけ論理ピクセルに変換
+			!isMac && setScaleFactor(await window.scaleFactor());
+
 			await window.setAlwaysOnTop(true);
 			await window.setFocus();
 
@@ -202,8 +212,8 @@ export function ScreenshotPage({ send }: Props) {
 			className="size-full relative"
 			style={{
 				cursor: `url("${Crosshair}") 12 12, crosshair`,
-				height: originalSize?.[1],
-				width: originalSize?.[0],
+				height: originalSize ? originalSize[1] / (scaleFactor ?? 1) : undefined,
+				width: originalSize ? originalSize[0] / (scaleFactor ?? 1) : undefined,
 			}}
 			onMouseDown={onMouseDown}
 			onMouseMove={onMouseMove}

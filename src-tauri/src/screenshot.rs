@@ -28,6 +28,7 @@ pub fn take_screen_shot() -> anyhow::Result<VirtualImage> {
             })
         })
         .collect::<anyhow::Result<Vec<_>>>()?;
+    let monitor_infos = monitor_infos.iter().map(process_image).collect::<Vec<_>>();
     let merged_image = merge_images(&monitor_infos)?;
 
     Ok(merged_image)
@@ -77,4 +78,21 @@ fn merge_images(monitor_infos: &[MonitorInfo]) -> anyhow::Result<VirtualImage> {
         );
     }
     Ok(VirtualImage { xy, wh, image })
+}
+/**
+ * if MacOS, screenshot based on PhysicalSize. Therefore, image resize to LogicalSize.
+ */
+fn process_image(monitor_info: &MonitorInfo) -> MonitorInfo {
+    let new_image = image::imageops::resize(
+        &monitor_info.image,
+        monitor_info.wh.0,
+        monitor_info.wh.1,
+        image::imageops::FilterType::Nearest,
+    );
+
+    MonitorInfo {
+        xy: monitor_info.xy,
+        wh: monitor_info.wh,
+        image: new_image,
+    }
 }
