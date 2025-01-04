@@ -6,11 +6,13 @@ import { ThemeProvider } from "./features/theme/useTheme.tsx";
 import { useEternalHistory } from "./features/translate/useEternalHistory.tsx";
 import { useConfig } from "./features/config/mod.tsx";
 import { EnterConfigPage } from "./features/page/enterConfig/mod.tsx";
+import { useVersion } from "./lib/utils/useVersion.ts";
 
 function AppInner() {
 	const { history, push } = useEternalHistory();
 	const { config, updateConfig } = useConfig();
 	const [pageState, send] = useMachine(pageMachine);
+	const version = useVersion();
 
 	if (pageState.matches("EnterConfig")) {
 		return (
@@ -35,6 +37,7 @@ function AppInner() {
 				pushHistory={push}
 				config={config}
 				updateConfig={updateConfig}
+				version={version}
 			/>
 		);
 	}

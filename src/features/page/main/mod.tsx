@@ -34,6 +34,7 @@ interface Props extends BaseProps {
 	pushHistory: (response: ResponseWithTime) => void;
 	config: Config | null;
 	updateConfig: (newConfig: Config) => Promise<void>;
+	version: string;
 }
 
 export function MainView({
@@ -43,6 +44,7 @@ export function MainView({
 	pushHistory,
 	config,
 	updateConfig,
+	version,
 }: Props) {
 	const [partialResponse, setPartialResponse] =
 		useState<Partial<Response> | null>(null);
@@ -185,32 +187,44 @@ export function MainView({
 					</Button>
 				</div>
 			</header>
-			<main className="grid grid-rows-[1fr,1fr] gap-4 p-5">
-				{responseOrPartial === null || responseOrPartial === undefined ? (
-					<>
-						<TextBlockSkeleton />
-						<TextBlockSkeleton />
-					</>
-				) : responseOrPartial.detected_language === "ja" ? (
-					<>
-						<TextBlock
-							label="Japanese"
-							content={responseOrPartial.ja ?? ""}
-							isDetected
-						/>
-						<TextBlock label="English" content={responseOrPartial.en ?? ""} />
-					</>
-				) : (
-					<>
-						<TextBlock
-							label="English"
-							content={responseOrPartial.en ?? ""}
-							isDetected
-						/>
-						<TextBlock label="Japanese" content={responseOrPartial.ja ?? ""} />
-					</>
-				)}
-			</main>
+
+			<div className="grid grid-rows-[1fr,auto] gap-1 px-5 pt-5 pb-2">
+				<main className="grid grid-rows-[1fr,1fr] gap-4">
+					{responseOrPartial === null || responseOrPartial === undefined ? (
+						<>
+							<TextBlockSkeleton />
+							<TextBlockSkeleton />
+						</>
+					) : responseOrPartial.detected_language === "ja" ? (
+						<>
+							<TextBlock
+								label="Japanese"
+								content={responseOrPartial.ja ?? ""}
+								isDetected
+							/>
+							<TextBlock label="English" content={responseOrPartial.en ?? ""} />
+						</>
+					) : (
+						<>
+							<TextBlock
+								label="English"
+								content={responseOrPartial.en ?? ""}
+								isDetected
+							/>
+							<TextBlock
+								label="Japanese"
+								content={responseOrPartial.ja ?? ""}
+							/>
+						</>
+					)}
+				</main>
+
+				<footer>
+					<div className="ml-auto w-fit text-muted-foreground text-sm">
+						{version !== null && `v${version}`}
+					</div>
+				</footer>
+			</div>
 		</div>
 	);
 }
