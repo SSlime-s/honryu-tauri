@@ -81,11 +81,12 @@ function HistoryItem({
 			<CardHeader>
 				<CardTitle>{formatISO9075(response.time)}</CardTitle>
 			</CardHeader>
-			<CardContent className="grid grid-cols-2">
-				<p className="line-clamp-3">
+			<CardContent className="grid grid-cols-[1fr,auto,1fr] gap-2">
+				<p className="line-clamp-3 break-words">
 					{response.detected_language === "ja" ? response.ja : response.en}
 				</p>
-				<p className="line-clamp-3">
+				<div className="bg-border w-px h-[100%+8px] -my-1" />
+				<p className="line-clamp-3 break-words">
 					{response.detected_language === "ja" ? response.en : response.ja}
 				</p>
 			</CardContent>
