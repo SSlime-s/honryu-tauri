@@ -69,7 +69,6 @@ export function ScreenshotPage({ send }: Props) {
 			setOriginalSize(screenshot.wh);
 
 			await currentWindow.setShadow(false);
-			await currentWindow.show();
 			const Position = isWin ? PhysicalPosition : LogicalPosition;
 			const Size = isWin ? PhysicalSize : LogicalSize;
 			await currentWindow.setPosition(
@@ -88,6 +87,7 @@ export function ScreenshotPage({ send }: Props) {
 			// NOTE: macOS では物理ピクセル基準で配置されるっぽいから Mac 以外だけ論理ピクセルに変換
 			!isMac && setScaleFactor(window.devicePixelRatio);
 
+			await currentWindow.show();
 			await currentWindow.setAlwaysOnTop(true);
 			await currentWindow.setFocus();
 
