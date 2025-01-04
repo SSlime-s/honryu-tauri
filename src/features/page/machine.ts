@@ -1,11 +1,9 @@
-import { assign, createMachine, fromPromise } from "xstate";
+import { assign, fromPromise, setup } from "xstate";
 import type { Response } from "../translate/schema.ts";
 import { loadConfig, loadConfigStore } from "../config/mod.tsx";
 import { check, type Update } from "@tauri-apps/plugin-updater";
 
-export const pageMachine = createMachine({
-	id: "page",
-	initial: "CheckConfig",
+export const pageMachine = setup({
 	types: {
 		context: {} as {
 			latestScreenshot: string | null;
@@ -31,6 +29,27 @@ export const pageMachine = createMachine({
 					type: "toScreenshot";
 			  },
 	},
+	actors: {
+		checkUpdate: fromPromise(async () => {
+			const update = await check();
+			if (update === null) {
+				throw new Error("no new version found");
+			}
+
+			assign({ updateInfo: update });
+		}),
+		checkConfig: fromPromise(async () => {
+			const store = await loadConfigStore();
+			const config = await loadConfig(store);
+			if (config !== null) {
+				return;
+			}
+			throw new Error("config not found");
+		}),
+	},
+}).createMachine({
+	id: "page",
+	initial: "CheckConfig",
 	context: {
 		latestScreenshot: null,
 		response: null,
@@ -40,14 +59,7 @@ export const pageMachine = createMachine({
 		CheckUpdate: {
 			invoke: {
 				id: "checkUpdate",
-				src: fromPromise(async () => {
-					const update = await check();
-					if (update === null) {
-						throw new Error("no new version found");
-					}
-
-					assign({ updateInfo: update });
-				}),
+				src: "checkUpdate",
 				onDone: {
 					target: "SelectUpdate",
 				},
@@ -64,14 +76,7 @@ export const pageMachine = createMachine({
 		CheckConfig: {
 			invoke: {
 				id: "checkConfig",
-				src: fromPromise(async () => {
-					const store = await loadConfigStore();
-					const config = await loadConfig(store);
-					if (config !== null) {
-						return;
-					}
-					throw new Error("config not found");
-				}),
+				src: "checkConfig",
 				onDone: {
 					target: "Screenshot",
 				},
