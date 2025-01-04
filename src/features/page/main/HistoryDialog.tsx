@@ -3,6 +3,7 @@ import type { ResponseWithTime } from "../../translate/schema";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogHeader,
 	DialogTrigger,
 } from "@/components/ui/dialog";
@@ -31,6 +32,11 @@ export function HistoryDialog({
 				<DialogHeader>
 					<DialogTitle>History</DialogTitle>
 				</DialogHeader>
+
+				<DialogDescription>
+					The history is limited to the last <b className="font-bold">20</b>{" "}
+					entries.
+				</DialogDescription>
 
 				<div className="flex flex-col gap-2 overflow-auto">
 					{history.map((response, index) => (

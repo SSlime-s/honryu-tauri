@@ -2,6 +2,7 @@ import { useMemo, type ReactNode } from "react";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogHeader,
 	DialogTrigger,
 } from "@/components/ui/dialog";
@@ -48,6 +49,10 @@ export function ConfigDialog({ trigger, config, updateConfig }: Props) {
 				<DialogHeader>
 					<DialogTitle>Config</DialogTitle>
 				</DialogHeader>
+
+				<DialogDescription>
+					The changes will be applied to the next translation.
+				</DialogDescription>
 
 				<div className="overflow-auto p-[2px]">
 					<ConfigForm
