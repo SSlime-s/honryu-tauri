@@ -71,25 +71,30 @@ function HistoryItem({
 	}, [setIndex, index]);
 
 	return (
-		<Card
+		<button
+			type="button"
 			onClick={onClick}
-			className={cn(
-				"cursor-pointer transition-colors",
-				isCurrent && "bg-accent",
-			)}
+			className="group cursor-pointer text-left"
 		>
-			<CardHeader>
-				<CardTitle>{formatISO9075(response.time)}</CardTitle>
-			</CardHeader>
-			<CardContent className="grid grid-cols-[1fr,auto,1fr] gap-2">
-				<p className="line-clamp-3 break-words">
-					{response.detected_language === "ja" ? response.ja : response.en}
-				</p>
-				<div className="bg-border w-px h-[100%+8px] -my-1" />
-				<p className="line-clamp-3 break-words">
-					{response.detected_language === "ja" ? response.en : response.ja}
-				</p>
-			</CardContent>
-		</Card>
+			<Card
+				className={cn(
+					"cursor-pointer transition-colors",
+					isCurrent ? "bg-accent" : "group-[:hover]:bg-accent",
+				)}
+			>
+				<CardHeader>
+					<CardTitle>{formatISO9075(response.time)} </CardTitle>
+				</CardHeader>
+				<CardContent className="grid grid-cols-[1fr,auto,1fr] gap-2">
+					<p className="line-clamp-3 break-words">
+						{response.detected_language === "ja" ? response.ja : response.en}
+					</p>
+					<div className="bg-border w-px h-[100%+8px] -my-1" />
+					<p className="line-clamp-3 break-words">
+						{response.detected_language === "ja" ? response.en : response.ja}
+					</p>
+				</CardContent>
+			</Card>
+		</button>
 	);
 }
