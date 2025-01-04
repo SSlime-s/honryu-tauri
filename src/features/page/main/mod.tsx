@@ -20,19 +20,31 @@ import {
 	Loader2,
 	Moon,
 	Scan,
+	Settings,
 	Sun,
 } from "lucide-react";
 import { useHistory } from "./useHistory.tsx";
 import { HistoryDialog } from "./HistoryDialog.tsx";
 import { useTheme } from "../../theme/useTheme.tsx";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import type { Config } from "@/features/config/mod.tsx";
+import { ConfigDialog } from "./ConfigDialog.tsx";
 
 interface Props extends BaseProps {
 	history: readonly ResponseWithTime[];
 	pushHistory: (response: ResponseWithTime) => void;
+	config: Config | null;
+	updateConfig: (newConfig: Config) => Promise<void>;
 }
 
-export function MainView({ pageState, send, history, pushHistory }: Props) {
+export function MainView({
+	pageState,
+	send,
+	history,
+	pushHistory,
+	config,
+	updateConfig,
+}: Props) {
 	const [partialResponse, setPartialResponse] =
 		useState<Partial<Response> | null>(null);
 	const { theme, toggle: toggleTheme, isLoading: isThemeLoading } = useTheme();
@@ -56,22 +68,14 @@ export function MainView({ pageState, send, history, pushHistory }: Props) {
 			const { signal } = abortController;
 
 			(async () => {
-				const config = await invoke("get_config");
-				const configResult = v.safeParse(
-					v.record(v.string(), v.string()),
-					config,
-				);
-				if (!configResult.success) {
-					throw new Error(`failed to parse config: ${configResult.issues}`);
-				}
 				if (pageState.context.latestScreenshot === null) {
 					throw new Error("latest screenshot is null");
 				}
 
-				const token = configResult.output.GENAI_API_KEY;
-				const model = configResult.output.GENAI_MODEL;
+				const token = config?.genai_api_key;
+				const model = config?.genai_model;
 				if (token === undefined) {
-					throw new Error("GENAI_API_KEY is not defined");
+					throw new Error("API key is not defined");
 				}
 				const genaiModel = createGenAIModel(token, model);
 				const stream = transcribeAndTranslateImageStream(
@@ -103,7 +107,13 @@ export function MainView({ pageState, send, history, pushHistory }: Props) {
 				abortController.abort();
 			};
 		}
-	}, [isLoading, pageState.context.latestScreenshot, send, pushHistory]);
+	}, [
+		isLoading,
+		pageState.context.latestScreenshot,
+		send,
+		pushHistory,
+		config,
+	]);
 
 	const responseOrPartial = isLoading
 		? partialResponse
@@ -112,13 +122,24 @@ export function MainView({ pageState, send, history, pushHistory }: Props) {
 	return (
 		<div className="size-full grid grid-rows-[auto,1fr] gap-1">
 			<header className="flex items-center border-b px-4 py-2 justify-between">
-				<Button
-					type="button"
-					disabled={isLoading}
-					onClick={() => send({ type: "toScreenshot" })}
-				>
-					{isLoading ? <Loader2 className="animate-spin" /> : <Scan />} New
-				</Button>
+				<div className="flex items-center gap-2">
+					<Button
+						type="button"
+						disabled={isLoading}
+						onClick={() => send({ type: "toScreenshot" })}
+					>
+						{isLoading ? <Loader2 className="animate-spin" /> : <Scan />} New
+					</Button>
+					<ConfigDialog
+						trigger={
+							<Button type="button" variant="ghost">
+								<Settings />
+							</Button>
+						}
+						config={config}
+						updateConfig={updateConfig}
+					/>
+				</div>
 				<div className="flex items-center gap-1">
 					<div className="flex items-center">
 						<Button

@@ -65,6 +65,23 @@ const PROMPT = `
         \`\`\`
 `;
 
+export async function verifyAPIKey(apiKey: string): Promise<boolean> {
+	const res = await fetch(
+		"https://generativelanguage.googleapis.com/v1/models",
+		{
+			headers: {
+				"x-goog-api-key": apiKey,
+			},
+		},
+	);
+
+	if (!res.ok) {
+		return false;
+	}
+
+	return true;
+}
+
 export function createGenAIModel(
 	apiKey: string,
 	model = "gemini-1.5-flash-002",

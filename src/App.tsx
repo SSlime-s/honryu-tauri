@@ -4,23 +4,42 @@ import { MainView } from "./features/page/main/mod.tsx";
 import { ScreenshotPage } from "./features/page/screenshot/mod.tsx";
 import { ThemeProvider } from "./features/theme/useTheme.tsx";
 import { useEternalHistory } from "./features/translate/useEternalHistory.tsx";
+import { useConfig } from "./features/config/mod.tsx";
+import { EnterConfigPage } from "./features/page/enterConfig/mod.tsx";
 
 function AppInner() {
 	const { history, push } = useEternalHistory();
+	const { config, updateConfig } = useConfig();
 	const [pageState, send] = useMachine(pageMachine);
+
+	if (pageState.matches("EnterConfig")) {
+		return (
+			<EnterConfigPage
+				updateConfig={updateConfig}
+				pageState={pageState}
+				send={send}
+			/>
+		);
+	}
 
 	if (pageState.matches("Screenshot")) {
 		return <ScreenshotPage pageState={pageState} send={send} />;
 	}
 
-	return (
-		<MainView
-			pageState={pageState}
-			send={send}
-			history={history}
-			pushHistory={push}
-		/>
-	);
+	if (pageState.matches("ViewLoading") || pageState.matches("View")) {
+		return (
+			<MainView
+				pageState={pageState}
+				send={send}
+				history={history}
+				pushHistory={push}
+				config={config}
+				updateConfig={updateConfig}
+			/>
+		);
+	}
+
+	return null;
 }
 function App() {
 	return (
