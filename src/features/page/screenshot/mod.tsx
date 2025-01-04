@@ -65,7 +65,6 @@ export function ScreenshotPage({ send }: Props) {
 			await currentWindow.setDecorations(false);
 
 			const screenshot = await takeScreenshot();
-			// const screenshot = await mockedScreenshot();
 			setWholeImage(screenshot.image);
 			setOriginalSize(screenshot.wh);
 
