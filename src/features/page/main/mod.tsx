@@ -123,7 +123,7 @@ export function MainView({
 	return (
 		<div className="size-full grid grid-rows-[auto,1fr] gap-1">
 			<header className="flex items-center border-b px-5 py-2.5 justify-between">
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-3">
 					<Button
 						type="button"
 						disabled={isLoading}
@@ -133,7 +133,7 @@ export function MainView({
 					</Button>
 					<ConfigDialog
 						trigger={
-							<Button type="button" variant="ghost">
+							<Button type="button" variant="ghost" size="icon">
 								<Settings />
 							</Button>
 						}
