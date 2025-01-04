@@ -34,6 +34,17 @@
 			"icons/128x128@2x.png",
 			"icons/icon.icns",
 			"icons/icon.ico"
-		]
+		],
+		"createUpdaterArtifacts": true
+	},
+	"plugins": {
+		"updater": {
+			"active": true,
+			"dialogs": true,
+			"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEM4RkM5QTNDM0NFNTQ1MjYKUldRbVJlVThQSnI4eU14SElheXppT0g0ZGN6c1NNc3N5dVhBbk12M3VncFYxUk9idTV6S2hhQ24K",
+			"endpoints": [
+				"https://github.com/SSlime-s/honryu-tauri/releases/latest/download/latest.json"
+			]
+		}
 	}
 }
