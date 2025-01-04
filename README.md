@@ -31,17 +31,8 @@ This is Tauri rewrite of [Honryu](https://github.com/trasta298/honryu).
 
 2. (On macOS) Since the certificate does not exist, please execute `xattr -rc /Applications/honryu.app` (Use at your own risk).
 
-3. Set up your Gemini API key and optionally specify the model:
-   - Create a `config` file in the same directory as the executable
-   - Add your API key to the file:
-     ```
-     GENAI_API_KEY=your_api_key_here
-     ```
-   - (Optional) Specify a different model by adding:
-     (The default model is `gemini-1.5-pro-002`)
-     ```
-     GENAI_MODEL=gemini-1.5-pro-002
-     ```
+3. Set up your Gemini API key and use model.
+  - start the application and enter the API key and model in the config.
 
 ## 🤝 Contributing
 
