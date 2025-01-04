@@ -145,7 +145,7 @@ export function MainView({
 							type="button"
 							variant="ghost"
 							size="icon"
-							disabled={!historyManager.hasPrev}
+							disabled={!historyManager.hasPrev || isLoading}
 							onClick={historyManager.prev}
 						>
 							<ChevronLeft />
@@ -154,7 +154,7 @@ export function MainView({
 							type="button"
 							variant="ghost"
 							size="icon"
-							disabled={!historyManager.hasNext}
+							disabled={!historyManager.hasNext || isLoading}
 							onClick={historyManager.next}
 						>
 							<ChevronRight />
@@ -165,7 +165,12 @@ export function MainView({
 						currentIndex={historyManager.currentIndex}
 						setIndex={historyManager.setIndex}
 						trigger={
-							<Button type="button" variant="ghost" size="icon">
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon"
+								disabled={isLoading}
+							>
 								<History />
 							</Button>
 						}
