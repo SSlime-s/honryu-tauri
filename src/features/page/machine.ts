@@ -100,9 +100,6 @@ export const pageMachine = setup({
 					})),
 				},
 			},
-			entry: () => {
-				console.log("Screenshot");
-			},
 		},
 		ViewLoading: {
 			on: {
