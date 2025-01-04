@@ -23,6 +23,10 @@
 		"global-shortcut:allow-register",
 		"global-shortcut:allow-unregister",
 		"theme:default",
-		"store:default"
+		"store:default",
+		"updater:allow-check",
+		"updater:allow-download",
+		"updater:allow-install",
+		"updater:allow-download-and-install"
 	]
 }
