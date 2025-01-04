@@ -7,12 +7,17 @@ import { useEternalHistory } from "./features/translate/useEternalHistory.tsx";
 import { useConfig } from "./features/config/mod.tsx";
 import { EnterConfigPage } from "./features/page/enterConfig/mod.tsx";
 import { useVersion } from "./lib/utils/useVersion.ts";
+import { SelectUpdate } from "./features/page/selectUpdate/mod.tsx";
 
 function AppInner() {
 	const { history, push } = useEternalHistory();
 	const { config, updateConfig } = useConfig();
 	const [pageState, send] = useMachine(pageMachine);
 	const version = useVersion();
+
+	if (pageState.matches("SelectUpdate")) {
+		return <SelectUpdate pageState={pageState} send={send} />;
+	}
 
 	if (pageState.matches("EnterConfig")) {
 		return (

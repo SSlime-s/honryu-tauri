@@ -1,17 +1,21 @@
 import { assign, createMachine, fromPromise } from "xstate";
 import type { Response } from "../translate/schema.ts";
 import { loadConfig, loadConfigStore } from "../config/mod.tsx";
+import { check, type Update } from "@tauri-apps/plugin-updater";
 
 export const pageMachine = createMachine({
-	/** @xstate-layout N4IgpgJg5mDOIC5QAcCGMB0BlAxgJzDADtYALAewBcBiS1Aa2IG0AGAXURXNgEtKfyRTiAAeiAIwAOACwZxANkkB2eUoCcS6SyWSArABoQATwkBmFhl2mlultMmT5amZNMBfN4bSYAajzAA7rTkuATEZFSsHEggyNx8AkIxYghSsgrKqhpaOgbGiJLiGKq2LABM0mXi4lqKHp4gROQQcMLeYG3x-ILCKQC08oYmCH26GGoTk1NT7g3t2PiEJBSUnbzdSaAplUMF8uPS6uIa8grWeh5e6GAYfoFrCT3JiKbSphhvNlKSagpqVbsED8Podficzrl6m4gA */
 	id: "page",
 	initial: "CheckConfig",
 	types: {
 		context: {} as {
 			latestScreenshot: string | null;
 			response: Response | null;
+			updateInfo: Update | null;
 		},
 		events: {} as
+			| {
+					type: "skip";
+			  }
 			| {
 					type: "configLoaded";
 			  }
@@ -30,8 +34,33 @@ export const pageMachine = createMachine({
 	context: {
 		latestScreenshot: null,
 		response: null,
+		updateInfo: null,
 	},
 	states: {
+		CheckUpdate: {
+			invoke: {
+				id: "checkUpdate",
+				src: fromPromise(async () => {
+					const update = await check();
+					if (update === null) {
+						throw new Error("no new version found");
+					}
+
+					assign({ updateInfo: update });
+				}),
+				onDone: {
+					target: "SelectUpdate",
+				},
+				onError: {
+					target: "CheckConfig",
+				},
+			},
+		},
+		SelectUpdate: {
+			on: {
+				skip: "CheckConfig",
+			},
+		},
 		CheckConfig: {
 			invoke: {
 				id: "checkConfig",
