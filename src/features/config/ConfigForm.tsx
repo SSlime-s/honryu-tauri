@@ -68,7 +68,11 @@ export function ConfigForm({ onSubmit, forUpdate, defaultValues }: Props) {
 							<FormItem>
 								<FormLabel>API key</FormLabel>
 								<FormControl>
-									<Input placeholder="Enter here ..." {...field} />
+									<Input
+										placeholder="Enter here ..."
+										{...field}
+										className="font-mono"
+									/>
 								</FormControl>
 								<FormMessage />
 								<FormDescription>
