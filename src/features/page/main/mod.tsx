@@ -34,7 +34,7 @@ interface Props extends BaseProps {
 	pushHistory: (response: ResponseWithTime) => void;
 	config: Config | null;
 	updateConfig: (newConfig: Config) => Promise<void>;
-	version: string;
+	version: string | null;
 }
 
 export function MainView({
