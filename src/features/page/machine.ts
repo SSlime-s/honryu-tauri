@@ -49,7 +49,7 @@ export const pageMachine = setup({
 	},
 }).createMachine({
 	id: "page",
-	initial: "CheckConfig",
+	initial: "CheckUpdate",
 	context: {
 		latestScreenshot: null,
 		response: null,
