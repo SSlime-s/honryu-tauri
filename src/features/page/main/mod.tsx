@@ -120,7 +120,7 @@ export function MainView({
 
 	return (
 		<div className="size-full grid grid-rows-[auto,1fr] gap-1">
-			<header className="flex items-center border-b px-4 py-2 justify-between">
+			<header className="flex items-center border-b px-5 py-2.5 justify-between">
 				<div className="flex items-center gap-2">
 					<Button
 						type="button"
@@ -185,7 +185,7 @@ export function MainView({
 					</Button>
 				</div>
 			</header>
-			<main className="grid grid-rows-[1fr,1fr] gap-2 p-4">
+			<main className="grid grid-rows-[1fr,1fr] gap-4 p-5">
 				{responseOrPartial === null || responseOrPartial === undefined ? (
 					<>
 						<TextBlockSkeleton />

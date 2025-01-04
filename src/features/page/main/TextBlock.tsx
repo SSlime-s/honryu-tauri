@@ -13,7 +13,7 @@ export function TextBlock({ label, content, isDetected }: Props) {
 	const id = useId();
 
 	return (
-		<div className="h-full flex flex-col gap-1">
+		<div className="h-full flex flex-col gap-2">
 			<Label>
 				{label}{" "}
 				{isDetected && (
@@ -29,7 +29,7 @@ export function TextBlock({ label, content, isDetected }: Props) {
 
 export function TextBlockSkeleton() {
 	return (
-		<div className="h-full flex flex-col gap-1">
+		<div className="h-full flex flex-col gap-2">
 			<Skeleton className="h-4 w-[10ch]" />
 			<Textarea value="" readOnly className="h-full" />
 		</div>
