@@ -34,8 +34,7 @@ export function HistoryDialog({
 				</DialogHeader>
 
 				<DialogDescription>
-					The history is limited to the last <b className="font-bold">20</b>{" "}
-					entries.
+					The history is limited to the last <b>20</b> entries.
 				</DialogDescription>
 
 				<div className="flex flex-col gap-2 overflow-auto">

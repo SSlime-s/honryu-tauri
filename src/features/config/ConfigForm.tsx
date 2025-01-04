@@ -76,7 +76,7 @@ export function ConfigForm({ onSubmit, forUpdate, defaultValues }: Props) {
 								</FormControl>
 								<FormMessage />
 								<FormDescription>
-									Get your API key reference from
+									See the
 									<Button variant="link" asChild size="sm" className="p-1">
 										<a
 											href="https://ai.google.dev/gemini-api/docs/api-key"
@@ -86,14 +86,15 @@ export function ConfigForm({ onSubmit, forUpdate, defaultValues }: Props) {
 											Gemini API Docs
 										</a>
 									</Button>
+									for how to get an API key.
 								</FormDescription>
 							</FormItem>
 						)}
 					/>
 					<p className="text-[0.8rem] text-muted-foreground flex gap-4">
 						<div>
-							If you want to check your API key, click the button right. <br />
-							(This will not need to be done when saving.)
+							To validate your API key, click the button on the right. <br />(
+							<b>Not required</b> for saving)
 						</div>
 						<TokenVerifierButton form={form} />
 					</p>
