@@ -84,16 +84,10 @@ export const pageMachine = setup({
 					target: "EnterConfig",
 				},
 			},
-			entry: () => {
-				console.log("CheckConfig");
-			},
 		},
 		EnterConfig: {
 			on: {
 				configLoaded: "Screenshot",
-			},
-			entry: () => {
-				console.log("EnterConfig");
 			},
 		},
 		Screenshot: {
