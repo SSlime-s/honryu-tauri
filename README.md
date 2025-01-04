@@ -19,6 +19,15 @@ This is Tauri rewrite of [Honryu](https://github.com/trasta298/honryu).
 
 1. Install from Release assets
   - From the latest release on https://github.com/SSlime-s/honryu-tauri/releases/latest, install the appropriate version for your OS.
+    - Windows: select one of the following.
+      - honryu_{{version}}_x64-setup.exe
+      - honryu_{{version}}_x64_en-UI.msi
+    - macOS (Apple Silicon): honryu_{{version}}_aarch64.dmg
+    - macOS (Intel): honryu_{{version}}_x64.dmg
+    - Linux: select one of the following.
+      - honryu_{{version}}_amd64.AppImage
+      - honryu_{{version}}_amd64.deb
+      - honryu_{{version}}-1_x86_64.rpm
 
 2. (On macOS) Since the certificate does not exist, please execute xattr -rc /Applications/honryu.app (Use at your own risk).
 
