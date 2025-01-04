@@ -134,7 +134,7 @@ export function MainView({
 					<ConfigDialog
 						trigger={
 							<Button type="button" variant="ghost" size="icon">
-								<Settings />
+								<Settings aria-label="config" />
 							</Button>
 						}
 						config={config}
@@ -150,7 +150,7 @@ export function MainView({
 							disabled={!historyManager.hasPrev || isLoading}
 							onClick={historyManager.prev}
 						>
-							<ChevronLeft />
+							<ChevronLeft aria-label="Prev item" />
 						</Button>
 						<Button
 							type="button"
@@ -159,7 +159,7 @@ export function MainView({
 							disabled={!historyManager.hasNext || isLoading}
 							onClick={historyManager.next}
 						>
-							<ChevronRight />
+							<ChevronRight aria-label="Next item" />
 						</Button>
 					</div>
 					<HistoryDialog
@@ -173,7 +173,7 @@ export function MainView({
 								size="icon"
 								disabled={isLoading}
 							>
-								<History />
+								<History aria-label="history" />
 							</Button>
 						}
 					/>
@@ -183,7 +183,11 @@ export function MainView({
 						size="icon"
 						onClick={toggleTheme}
 					>
-						{theme === "light" ? <Moon /> : <Sun />}
+						{theme === "light" ? (
+							<Moon aria-label="change to dark theme" />
+						) : (
+							<Sun aria-label="change to light theme" />
+						)}
 					</Button>
 				</div>
 			</header>
