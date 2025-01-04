@@ -29,7 +29,7 @@ This is Tauri rewrite of [Honryu](https://github.com/trasta298/honryu).
       - honryu_{{version}}_amd64.deb
       - honryu_{{version}}-1_x86_64.rpm
 
-2. (On macOS) Since the certificate does not exist, please execute xattr -rc /Applications/honryu.app (Use at your own risk).
+2. (On macOS) Since the certificate does not exist, please execute `xattr -rc /Applications/honryu.app` (Use at your own risk).
 
 3. Set up your Gemini API key and optionally specify the model:
    - Create a `config` file in the same directory as the executable
