@@ -10,7 +10,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { formatISO9075 } from "date-fns/fp";
+import { formatISO, formatISO9075 } from "date-fns/fp";
 
 interface Props {
 	history: readonly ResponseWithTime[];
@@ -83,7 +83,11 @@ function HistoryItem({
 				)}
 			>
 				<CardHeader>
-					<CardTitle>{formatISO9075(response.time)} </CardTitle>
+					<CardTitle>
+						<time dateTime={formatISO(response.time)}>
+							{formatISO9075(response.time)}
+						</time>
+					</CardTitle>
 				</CardHeader>
 				<CardContent className="grid grid-cols-[1fr,auto,1fr] gap-2">
 					<p className="line-clamp-3 break-words">
