@@ -89,7 +89,7 @@ export function SelectUpdate({ pageState, send }: Props) {
 						{downloaded} / {total ?? "Unknown"}
 					</div>
 					{/* TODO: 大体 20MB がちだから、place holder として 20MB を入れてる */}
-					<Progress value={downloaded / (total ?? 20 * 1000 * 1000)} />
+					<Progress value={(100 * downloaded) / (total ?? 20 * 1000 * 1000)} />
 				</div>
 			</div>
 		);
