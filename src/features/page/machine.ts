@@ -36,7 +36,7 @@ export const pageMachine = setup({
 				throw new Error("no new version found");
 			}
 
-			assign({ updateInfo: update });
+			return update;
 		}),
 		checkConfig: fromPromise(async () => {
 			const store = await loadConfigStore();
@@ -62,6 +62,10 @@ export const pageMachine = setup({
 				src: "checkUpdate",
 				onDone: {
 					target: "SelectUpdate",
+					actions: assign(({ context, event }) => ({
+						...context,
+						updateInfo: event.output,
+					})),
 				},
 				onError: {
 					target: "CheckConfig",
