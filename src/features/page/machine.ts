@@ -1,15 +1,19 @@
 import { assign, fromPromise, setup } from "xstate";
 import type { Response } from "../translate/schema.ts";
-import { loadConfig, loadConfigStore } from "../config/mod.tsx";
+import { loadConfig, loadConfigStore, type Config } from "../config/mod.tsx";
 import { check, type Update } from "@tauri-apps/plugin-updater";
+
+interface Context {
+	latestScreenshot: string | null;
+	response: Response | null;
+	updateInfo: Update | null;
+	updatePromise: Promise<Update | null>;
+	configPromise: Promise<Config | null>;
+}
 
 export const pageMachine = setup({
 	types: {
-		context: {} as {
-			latestScreenshot: string | null;
-			response: Response | null;
-			updateInfo: Update | null;
-		},
+		context: {} as Context,
 		events: {} as
 			| {
 					type: "skip";
@@ -30,22 +34,25 @@ export const pageMachine = setup({
 			  },
 	},
 	actors: {
-		checkUpdate: fromPromise(async () => {
-			const update = await check();
-			if (update === null) {
-				throw new Error("no new version found");
-			}
+		checkUpdate: fromPromise<Update, Context["updatePromise"]>(
+			async ({ input }) => {
+				const update = await input;
+				if (update === null) {
+					throw new Error("no new version found");
+				}
 
-			return update;
-		}),
-		checkConfig: fromPromise(async () => {
-			const store = await loadConfigStore();
-			const config = await loadConfig(store);
-			if (config !== null) {
-				return;
-			}
-			throw new Error("config not found");
-		}),
+				return update;
+			},
+		),
+		checkConfig: fromPromise<void, Context["configPromise"]>(
+			async ({ input }) => {
+				const config = await input;
+				if (config !== null) {
+					return;
+				}
+				throw new Error("config not found");
+			},
+		),
 	},
 }).createMachine({
 	id: "page",
@@ -54,12 +61,15 @@ export const pageMachine = setup({
 		latestScreenshot: null,
 		response: null,
 		updateInfo: null,
+		updatePromise: check(),
+		configPromise: loadConfigStore().then(loadConfig),
 	},
 	states: {
 		CheckUpdate: {
 			invoke: {
 				id: "checkUpdate",
 				src: "checkUpdate",
+				input: ({ context }) => context.updatePromise,
 				onDone: {
 					target: "SelectUpdate",
 					actions: assign(({ context, event }) => ({
@@ -81,6 +91,7 @@ export const pageMachine = setup({
 			invoke: {
 				id: "checkConfig",
 				src: "checkConfig",
+				input: ({ context }) => context.configPromise,
 				onDone: {
 					target: "Screenshot",
 				},
