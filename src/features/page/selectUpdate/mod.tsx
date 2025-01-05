@@ -60,6 +60,9 @@ export function SelectUpdate({ pageState, send }: Props) {
 	}, [send]);
 
 	if (isDownloading) {
+		// TODO: 大体 20MB がちだから、place holder として 20MB を入れてる
+		const progress = (100 * downloaded) / (total ?? 20 * 1000 * 1000);
+
 		return (
 			<div className="p-4 size-full grid grid-rows-[auto,1fr] gap-4">
 				<div>
@@ -88,8 +91,7 @@ export function SelectUpdate({ pageState, send }: Props) {
 					<div className="mb-3 text-right">
 						{downloaded} / {total ?? "Unknown"}
 					</div>
-					{/* TODO: 大体 20MB がちだから、place holder として 20MB を入れてる */}
-					<Progress value={(100 * downloaded) / (total ?? 20 * 1000 * 1000)} />
+					<Progress value={progress} />
 				</div>
 			</div>
 		);
