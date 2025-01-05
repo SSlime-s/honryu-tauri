@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Check, Loader2, MoveRight } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { formatToCommaNumber } from "@/lib/utils/commaNumber";
 
 interface Props extends BaseProps {}
 
@@ -89,7 +90,8 @@ export function SelectUpdate({ pageState, send }: Props) {
 				</div>
 				<div className="font-bold text-lg text-muted-foreground self-center">
 					<div className="mb-3 text-right">
-						{downloaded} / {total ?? "Unknown"}
+						{formatToCommaNumber(downloaded)} /{" "}
+						{total !== null ? formatToCommaNumber(total) : "Unknown"}
 					</div>
 					<Progress value={progress} />
 				</div>
