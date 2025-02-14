@@ -98,10 +98,10 @@ export function ConfigForm({ onSubmit, forUpdate, defaultValues }: Props) {
 						)}
 					/>
 					<p className="text-[0.8rem] text-muted-foreground flex gap-4">
-						<div>
+						<span>
 							To validate your API key, click the button on the right. <br />(
 							<b>Not required</b> for saving)
-						</div>
+						</span>
 						<TokenVerifierButton form={form} />
 					</p>
 				</div>
