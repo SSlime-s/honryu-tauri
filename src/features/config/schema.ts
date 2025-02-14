@@ -12,7 +12,7 @@ export const models = {
 } as const;
 export const modelKeys = Object.keys(models) as (keyof typeof models)[];
 
-export const DEFAULT_MODEL = "gemini-2.0-flash-lite-preview-02-05";
+export const DEFAULT_MODEL = "gemini-2.0-flash";
 
 export const formSchema = v.object({
 	genai_api_key: v.pipe(
