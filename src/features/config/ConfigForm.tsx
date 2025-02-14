@@ -58,7 +58,11 @@ export function ConfigForm({ onSubmit, forUpdate, defaultValues }: Props) {
 	);
 
 	const submitDisabled =
-		form.formState.isSubmitting || (forUpdate && !form.formState.isDirty);
+		form.formState.isSubmitting ||
+		(forUpdate &&
+			!form.formState.isDirty &&
+			// NOTE: genai_model は deprecated になって、undefined がわたってきて、fallback 値を使ってることがある
+			defaultValues?.genai_model !== undefined);
 
 	return (
 		<Form {...form}>
