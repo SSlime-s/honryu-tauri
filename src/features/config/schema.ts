@@ -19,6 +19,6 @@ export const formSchema = v.object({
 		v.string("API key is required"),
 		v.nonEmpty("API key is required"),
 	),
-	genai_model: v.picklist(Object.keys(models) as (keyof typeof models)[]),
+	genai_model: v.picklist(modelKeys),
 });
 export type FormValues = v.InferOutput<typeof formSchema>;
