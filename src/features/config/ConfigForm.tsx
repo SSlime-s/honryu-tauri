@@ -18,7 +18,13 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { formSchema, modelKeys, models, type FormValues } from "./schema";
+import {
+	DEFAULT_MODEL,
+	formSchema,
+	modelKeys,
+	models,
+	type FormValues,
+} from "./schema";
 import { TokenVerifierButton } from "./TokenVerifierButton";
 import { useCallback } from "react";
 
@@ -32,7 +38,7 @@ export function ConfigForm({ onSubmit, forUpdate, defaultValues }: Props) {
 		resolver: valibotResolver(formSchema),
 		defaultValues: {
 			genai_api_key: "",
-			genai_model: "gemini-1.5-flash",
+			genai_model: DEFAULT_MODEL,
 			...defaultValues,
 		},
 	});

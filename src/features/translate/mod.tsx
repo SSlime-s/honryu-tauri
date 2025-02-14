@@ -31,6 +31,7 @@ import { Allow, parse } from "partial-json";
 import * as v from "valibot";
 import { partialResponseSchema, responseSchema } from "./schema.ts";
 import { GENERATION_CONFIG, SAFETY_SETTINGS } from "./settings.ts";
+import { DEFAULT_MODEL } from "../config/schema.ts";
 
 const PROMPT = `
     Role: Professional Image Text Recognizer and Translator
@@ -84,7 +85,7 @@ export async function verifyAPIKey(apiKey: string): Promise<boolean> {
 
 export function createGenAIModel(
 	apiKey: string,
-	model = "gemini-1.5-flash-002",
+	model = DEFAULT_MODEL,
 ): GenerativeModel {
 	const genAI = new GoogleGenerativeAI(apiKey);
 	const genModel = genAI.getGenerativeModel({
