@@ -50,7 +50,7 @@ export function ConfigDialog({ trigger, config, updateConfig }: Props) {
 					<DialogTitle>Config</DialogTitle>
 				</DialogHeader>
 
-				<DialogDescription>
+				<DialogDescription className="text-destructive">
 					The changes will be applied to the next translation.
 				</DialogDescription>
 
